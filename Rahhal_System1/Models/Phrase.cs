@@ -14,5 +14,11 @@ namespace Rahhal_System1.Models
         public string Translation { get; set; }
         public string Language { get; set; }
         public string Notes { get; set; }
+
+        public bool IsDeleted { get; set; }
+        public DateTime? UpdatedAt { get; set; }
+
+        public CityVisit Visit { get; set; }
+
     }
 }

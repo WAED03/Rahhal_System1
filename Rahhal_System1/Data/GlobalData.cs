@@ -31,7 +31,7 @@ namespace Rahhal_System1.Data
         public static void RefreshTrips(int userId) => TripsList = TripDAL.GetTripsByUser(userId);
         public static void RefreshCities(int countryId) => CitiesList = CityDAL.GetCitiesByCountry(countryId);
         public static void RefreshCityVisits(int tripId) => CityVisitsList = CityVisitDAL.GetVisitsByTrip(tripId);
-        public static void RefreshPhrases(int visitId) => PhrasesList = PhraseDAL.GetPhrasesByVisit(visitId);
+        public static void RefreshPhrases(int userId) => PhrasesList = PhraseDAL.GetPhrasesByUser(userId);
 
         // ✅ لتحديث الكل مرة واحدة عند بدء التطبيق (مع تحديد userId و countryId... إذا لزم)
         public static void RefreshAll()

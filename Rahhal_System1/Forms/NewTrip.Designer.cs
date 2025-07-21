@@ -1,4 +1,4 @@
-﻿namespace Rahhal_System1
+﻿namespace Rahhal_System1.Forms
 {
     partial class NewTrip
     {
@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.panel1 = new System.Windows.Forms.Panel();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -35,13 +36,15 @@
             this.label3 = new System.Windows.Forms.Label();
             this.dtpStartDate = new System.Windows.Forms.DateTimePicker();
             this.label4 = new System.Windows.Forms.Label();
-            this.dtpendDate = new System.Windows.Forms.DateTimePicker();
+            this.dtpEndDate = new System.Windows.Forms.DateTimePicker();
             this.label5 = new System.Windows.Forms.Label();
-            this.cmbTravelMethod = new System.Windows.Forms.ComboBox();
+            this.cbTravelMethod = new System.Windows.Forms.ComboBox();
             this.label6 = new System.Windows.Forms.Label();
             this.txtNotes = new System.Windows.Forms.TextBox();
             this.btnSaveTrip = new System.Windows.Forms.Button();
+            this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
             this.SuspendLayout();
             // 
             // panel1
@@ -63,9 +66,9 @@
             this.label1.ForeColor = System.Drawing.Color.DodgerBlue;
             this.label1.Location = new System.Drawing.Point(74, 23);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(270, 47);
+            this.label1.Size = new System.Drawing.Size(263, 47);
             this.label1.TabIndex = 0;
-            this.label1.Text = "ADD A NEW TRIP";
+            this.label1.Text = "ADD / EDIT TRIP";
             // 
             // label2
             // 
@@ -111,12 +114,12 @@
             this.label4.TabIndex = 5;
             this.label4.Text = "End Date :";
             // 
-            // dtpendDate
+            // dtpEndDate
             // 
-            this.dtpendDate.Location = new System.Drawing.Point(82, 243);
-            this.dtpendDate.Name = "dtpendDate";
-            this.dtpendDate.Size = new System.Drawing.Size(239, 22);
-            this.dtpendDate.TabIndex = 6;
+            this.dtpEndDate.Location = new System.Drawing.Point(82, 243);
+            this.dtpEndDate.Name = "dtpEndDate";
+            this.dtpEndDate.Size = new System.Drawing.Size(239, 22);
+            this.dtpEndDate.TabIndex = 6;
             // 
             // label5
             // 
@@ -128,13 +131,13 @@
             this.label5.TabIndex = 7;
             this.label5.Text = "Travel Method : ";
             // 
-            // cmbTravelMethod
+            // cbTravelMethod
             // 
-            this.cmbTravelMethod.FormattingEnabled = true;
-            this.cmbTravelMethod.Location = new System.Drawing.Point(82, 296);
-            this.cmbTravelMethod.Name = "cmbTravelMethod";
-            this.cmbTravelMethod.Size = new System.Drawing.Size(239, 21);
-            this.cmbTravelMethod.TabIndex = 8;
+            this.cbTravelMethod.FormattingEnabled = true;
+            this.cbTravelMethod.Location = new System.Drawing.Point(82, 296);
+            this.cbTravelMethod.Name = "cbTravelMethod";
+            this.cbTravelMethod.Size = new System.Drawing.Size(239, 21);
+            this.cbTravelMethod.TabIndex = 8;
             // 
             // label6
             // 
@@ -166,6 +169,11 @@
             this.btnSaveTrip.TabIndex = 11;
             this.btnSaveTrip.Text = "SAVE TRIP";
             this.btnSaveTrip.UseVisualStyleBackColor = false;
+            this.btnSaveTrip.Click += new System.EventHandler(this.btnSaveTrip_Click);
+            // 
+            // errorProvider1
+            // 
+            this.errorProvider1.ContainerControl = this;
             // 
             // NewTrip
             // 
@@ -176,9 +184,9 @@
             this.Controls.Add(this.btnSaveTrip);
             this.Controls.Add(this.txtNotes);
             this.Controls.Add(this.label6);
-            this.Controls.Add(this.cmbTravelMethod);
+            this.Controls.Add(this.cbTravelMethod);
             this.Controls.Add(this.label5);
-            this.Controls.Add(this.dtpendDate);
+            this.Controls.Add(this.dtpEndDate);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.dtpStartDate);
             this.Controls.Add(this.label3);
@@ -190,8 +198,10 @@
             this.Name = "NewTrip";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "NewTrip";
+            this.Load += new System.EventHandler(this.NewTrip_Load);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -206,11 +216,12 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.DateTimePicker dtpStartDate;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.DateTimePicker dtpendDate;
+        private System.Windows.Forms.DateTimePicker dtpEndDate;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.ComboBox cmbTravelMethod;
+        private System.Windows.Forms.ComboBox cbTravelMethod;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox txtNotes;
         private System.Windows.Forms.Button btnSaveTrip;
+        private System.Windows.Forms.ErrorProvider errorProvider1;
     }
 }

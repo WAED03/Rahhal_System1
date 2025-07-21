@@ -1,4 +1,4 @@
-﻿namespace Rahhal_System1
+﻿namespace Rahhal_System1.Forms
 {
     partial class NewCity
     {
@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.panel1 = new System.Windows.Forms.Panel();
             this.label1 = new System.Windows.Forms.Label();
             this.btnSaveCity = new System.Windows.Forms.Button();
@@ -36,15 +37,17 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.cmdTrip = new System.Windows.Forms.ComboBox();
-            this.cmbCountry = new System.Windows.Forms.ComboBox();
-            this.cmbCity = new System.Windows.Forms.ComboBox();
+            this.cbTrips = new System.Windows.Forms.ComboBox();
+            this.cbCountries = new System.Windows.Forms.ComboBox();
+            this.cbCities = new System.Windows.Forms.ComboBox();
             this.dtpVisitDate = new System.Windows.Forms.DateTimePicker();
-            this.numRating = new System.Windows.Forms.NumericUpDown();
+            this.nudRating = new System.Windows.Forms.NumericUpDown();
             this.label7 = new System.Windows.Forms.Label();
-            this.txtVisitNote = new System.Windows.Forms.TextBox();
+            this.txtNotes = new System.Windows.Forms.TextBox();
+            this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
             this.panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numRating)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudRating)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
             this.SuspendLayout();
             // 
             // panel1
@@ -58,17 +61,17 @@
             // 
             // label1
             // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Segoe Print", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.Color.DodgerBlue;
-            this.label1.Location = new System.Drawing.Point(74, 23);
+            this.label1.Location = new System.Drawing.Point(72, 23);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(268, 47);
+            this.label1.Size = new System.Drawing.Size(272, 47);
             this.label1.TabIndex = 0;
-            this.label1.Text = "ADD A NEW CITY";
+            this.label1.Text = "ADD / EDIT  CITY";
             // 
             // btnSaveCity
             // 
@@ -82,6 +85,7 @@
             this.btnSaveCity.TabIndex = 23;
             this.btnSaveCity.Text = "SAVE CITY";
             this.btnSaveCity.UseVisualStyleBackColor = false;
+            this.btnSaveCity.Click += new System.EventHandler(this.btnSaveCity_Click);
             // 
             // label6
             // 
@@ -133,29 +137,29 @@
             this.label2.TabIndex = 13;
             this.label2.Text = "Choose Raleted Trip :";
             // 
-            // cmdTrip
+            // cbTrips
             // 
-            this.cmdTrip.FormattingEnabled = true;
-            this.cmdTrip.Location = new System.Drawing.Point(82, 124);
-            this.cmdTrip.Name = "cmdTrip";
-            this.cmdTrip.Size = new System.Drawing.Size(239, 21);
-            this.cmdTrip.TabIndex = 24;
+            this.cbTrips.FormattingEnabled = true;
+            this.cbTrips.Location = new System.Drawing.Point(82, 124);
+            this.cbTrips.Name = "cbTrips";
+            this.cbTrips.Size = new System.Drawing.Size(239, 21);
+            this.cbTrips.TabIndex = 24;
             // 
-            // cmbCountry
+            // cbCountries
             // 
-            this.cmbCountry.FormattingEnabled = true;
-            this.cmbCountry.Location = new System.Drawing.Point(82, 176);
-            this.cmbCountry.Name = "cmbCountry";
-            this.cmbCountry.Size = new System.Drawing.Size(239, 21);
-            this.cmbCountry.TabIndex = 25;
+            this.cbCountries.FormattingEnabled = true;
+            this.cbCountries.Location = new System.Drawing.Point(82, 176);
+            this.cbCountries.Name = "cbCountries";
+            this.cbCountries.Size = new System.Drawing.Size(239, 21);
+            this.cbCountries.TabIndex = 25;
             // 
-            // cmbCity
+            // cbCities
             // 
-            this.cmbCity.FormattingEnabled = true;
-            this.cmbCity.Location = new System.Drawing.Point(82, 228);
-            this.cmbCity.Name = "cmbCity";
-            this.cmbCity.Size = new System.Drawing.Size(239, 21);
-            this.cmbCity.TabIndex = 26;
+            this.cbCities.FormattingEnabled = true;
+            this.cbCities.Location = new System.Drawing.Point(82, 228);
+            this.cbCities.Name = "cbCities";
+            this.cbCities.Size = new System.Drawing.Size(239, 21);
+            this.cbCities.TabIndex = 26;
             // 
             // dtpVisitDate
             // 
@@ -164,12 +168,12 @@
             this.dtpVisitDate.Size = new System.Drawing.Size(239, 22);
             this.dtpVisitDate.TabIndex = 27;
             // 
-            // numRating
+            // nudRating
             // 
-            this.numRating.Location = new System.Drawing.Point(82, 332);
-            this.numRating.Name = "numRating";
-            this.numRating.Size = new System.Drawing.Size(239, 22);
-            this.numRating.TabIndex = 28;
+            this.nudRating.Location = new System.Drawing.Point(82, 332);
+            this.nudRating.Name = "nudRating";
+            this.nudRating.Size = new System.Drawing.Size(239, 22);
+            this.nudRating.TabIndex = 28;
             // 
             // label7
             // 
@@ -181,13 +185,17 @@
             this.label7.TabIndex = 29;
             this.label7.Text = "Rating from ( 1 to 5 ) :";
             // 
-            // txtVisitNote
+            // txtNotes
             // 
-            this.txtVisitNote.Location = new System.Drawing.Point(82, 384);
-            this.txtVisitNote.Multiline = true;
-            this.txtVisitNote.Name = "txtVisitNote";
-            this.txtVisitNote.Size = new System.Drawing.Size(239, 56);
-            this.txtVisitNote.TabIndex = 30;
+            this.txtNotes.Location = new System.Drawing.Point(82, 384);
+            this.txtNotes.Multiline = true;
+            this.txtNotes.Name = "txtNotes";
+            this.txtNotes.Size = new System.Drawing.Size(239, 56);
+            this.txtNotes.TabIndex = 30;
+            // 
+            // errorProvider1
+            // 
+            this.errorProvider1.ContainerControl = this;
             // 
             // NewCity
             // 
@@ -195,13 +203,13 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(406, 521);
-            this.Controls.Add(this.txtVisitNote);
+            this.Controls.Add(this.txtNotes);
             this.Controls.Add(this.label7);
-            this.Controls.Add(this.numRating);
+            this.Controls.Add(this.nudRating);
             this.Controls.Add(this.dtpVisitDate);
-            this.Controls.Add(this.cmbCity);
-            this.Controls.Add(this.cmbCountry);
-            this.Controls.Add(this.cmdTrip);
+            this.Controls.Add(this.cbCities);
+            this.Controls.Add(this.cbCountries);
+            this.Controls.Add(this.cbTrips);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.btnSaveCity);
             this.Controls.Add(this.label6);
@@ -214,9 +222,11 @@
             this.Name = "NewCity";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "NewCity";
+            this.Load += new System.EventHandler(this.NewCity_Load1);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numRating)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudRating)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -232,12 +242,13 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.ComboBox cmdTrip;
-        private System.Windows.Forms.ComboBox cmbCountry;
-        private System.Windows.Forms.ComboBox cmbCity;
+        private System.Windows.Forms.ComboBox cbTrips;
+        private System.Windows.Forms.ComboBox cbCountries;
+        private System.Windows.Forms.ComboBox cbCities;
         private System.Windows.Forms.DateTimePicker dtpVisitDate;
-        private System.Windows.Forms.NumericUpDown numRating;
+        private System.Windows.Forms.NumericUpDown nudRating;
         private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.TextBox txtVisitNote;
+        private System.Windows.Forms.TextBox txtNotes;
+        private System.Windows.Forms.ErrorProvider errorProvider1;
     }
 }

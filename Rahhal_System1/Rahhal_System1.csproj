@@ -33,6 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -46,12 +49,34 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data\CurrentSession.cs" />
+    <Compile Include="Models\MessagesApiResponse.cs" />
+    <Compile Include="Models\AboutApiResponse.cs" />
+    <Compile Include="Models\MessageModel.cs" />
+    <Compile Include="UC\AboutUC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UC\AboutUC.Designer.cs">
+      <DependentUpon>AboutUC.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UC\CallusUC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UC\CallusUC.Designer.cs">
+      <DependentUpon>CallusUC.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DAL\ActivityLogger.cs" />
     <Compile Include="DAL\CityDAL.cs" />
     <Compile Include="DAL\CityVisitDAL.cs" />
     <Compile Include="DAL\CountryDAL.cs" />
     <Compile Include="DAL\DbHelper.cs" />
     <Compile Include="Data\GlobalData.cs" />
+    <Compile Include="Forms\EventsLogForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\EventsLogForm.Designer.cs">
+      <DependentUpon>EventsLogForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ISoftDeletable.cs" />
     <Compile Include="Models\City.cs" />
     <Compile Include="Models\CityVisit.cs" />
     <Compile Include="Models\Country.cs" />
@@ -59,11 +84,12 @@
     <Compile Include="Models\Trip.cs" />
     <Compile Include="DAL\PhraseDAL.cs" />
     <Compile Include="DAL\TripDAL.cs" />
-    <Compile Include="UC\AccountUC.cs">
-      <SubType>UserControl</SubType>
+    <Compile Include="DAL\SecurityHelper.cs" />
+    <Compile Include="Forms\SettingsForm.cs">
+      <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UC\AccountUC.Designer.cs">
-      <DependentUpon>AccountUC.cs</DependentUpon>
+    <Compile Include="Forms\SettingsForm.Designer.cs">
+      <DependentUpon>SettingsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="UC\CitiesUC.cs">
       <SubType>UserControl</SubType>
@@ -71,11 +97,11 @@
     <Compile Include="UC\CitiesUC.Designer.cs">
       <DependentUpon>CitiesUC.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Form1.cs">
+    <Compile Include="Forms\loginForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="Forms\loginForm.Designer.cs">
+      <DependentUpon>loginForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\HomeForm.cs">
       <SubType>Form</SubType>
@@ -101,9 +127,6 @@
     <Compile Include="Forms\NewWord.Designer.cs">
       <DependentUpon>NewWord.cs</DependentUpon>
     </Compile>
-    <Compile Include="Models\OvalBlueButton .cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="UC\PhraseUC.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -120,14 +143,35 @@
     </Compile>
     <Compile Include="Models\User.cs" />
     <Compile Include="DAL\UserDAL.cs" />
-    <EmbeddedResource Include="UC\AccountUC.resx">
-      <DependentUpon>AccountUC.cs</DependentUpon>
+    <Compile Include="Forms\ViewUsersForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ViewUsersForm.Designer.cs">
+      <DependentUpon>ViewUsersForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\UsersMessagesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\UsersMessagesForm.Designer.cs">
+      <DependentUpon>UsersMessagesForm.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="UC\AboutUC.resx">
+      <DependentUpon>AboutUC.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UC\CallusUC.resx">
+      <DependentUpon>CallusUC.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\EventsLogForm.resx">
+      <DependentUpon>EventsLogForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\SettingsForm.resx">
+      <DependentUpon>SettingsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UC\CitiesUC.resx">
       <DependentUpon>CitiesUC.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\loginForm.resx">
+      <DependentUpon>loginForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\HomeForm.resx">
       <DependentUpon>HomeForm.cs</DependentUpon>
@@ -157,6 +201,13 @@
     <EmbeddedResource Include="UC\TripsUC.resx">
       <DependentUpon>TripsUC.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ViewUsersForm.resx">
+      <DependentUpon>ViewUsersForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\UsersMessagesForm.resx">
+      <DependentUpon>UsersMessagesForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -190,6 +241,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\inter5.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\photo_2025-07-14_19-51-22.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\account.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Darkmode.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\inter6.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

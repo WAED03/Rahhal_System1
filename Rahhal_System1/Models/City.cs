@@ -11,5 +11,9 @@ namespace Rahhal_System1.Models
         public int CityID { get; set; }
         public int CountryID { get; set; }
         public string CityName { get; set; }
+
+        public bool IsDeleted { get; set; }
+        public DateTime? UpdatedAt { get; set; }
+        public Country Country { get; set; }
     }
 }

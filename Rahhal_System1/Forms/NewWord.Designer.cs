@@ -1,4 +1,4 @@
-﻿namespace Rahhal_System1
+﻿namespace Rahhal_System1.Forms
 {
     partial class NewWord
     {
@@ -28,12 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.panel1 = new System.Windows.Forms.Panel();
             this.label1 = new System.Windows.Forms.Label();
             this.btnSaveWord = new System.Windows.Forms.Button();
-            this.cmbTrip = new System.Windows.Forms.ComboBox();
+            this.cbTrip = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.cmbCity = new System.Windows.Forms.ComboBox();
+            this.cbCity = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
             this.txtOriginal = new System.Windows.Forms.TextBox();
             this.txtTranslation = new System.Windows.Forms.TextBox();
@@ -42,8 +43,10 @@
             this.label = new System.Windows.Forms.Label();
             this.txtLanguage = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.txtWordNote = new System.Windows.Forms.TextBox();
+            this.txtNotes = new System.Windows.Forms.TextBox();
+            this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
             this.SuspendLayout();
             // 
             // panel1
@@ -65,9 +68,9 @@
             this.label1.ForeColor = System.Drawing.Color.DodgerBlue;
             this.label1.Location = new System.Drawing.Point(56, 24);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(294, 47);
+            this.label1.Size = new System.Drawing.Size(287, 47);
             this.label1.TabIndex = 0;
-            this.label1.Text = "ADD A NEW WORD";
+            this.label1.Text = "ADD / EDIT WORD";
             // 
             // btnSaveWord
             // 
@@ -81,14 +84,15 @@
             this.btnSaveWord.TabIndex = 23;
             this.btnSaveWord.Text = "SAVE WORD";
             this.btnSaveWord.UseVisualStyleBackColor = false;
+            this.btnSaveWord.Click += new System.EventHandler(this.btnSaveWord_Click);
             // 
-            // cmbTrip
+            // cbTrip
             // 
-            this.cmbTrip.FormattingEnabled = true;
-            this.cmbTrip.Location = new System.Drawing.Point(84, 112);
-            this.cmbTrip.Name = "cmbTrip";
-            this.cmbTrip.Size = new System.Drawing.Size(239, 21);
-            this.cmbTrip.TabIndex = 26;
+            this.cbTrip.FormattingEnabled = true;
+            this.cbTrip.Location = new System.Drawing.Point(84, 112);
+            this.cbTrip.Name = "cbTrip";
+            this.cbTrip.Size = new System.Drawing.Size(239, 21);
+            this.cbTrip.TabIndex = 26;
             // 
             // label2
             // 
@@ -100,13 +104,13 @@
             this.label2.TabIndex = 25;
             this.label2.Text = "Choose Raleted Trip :";
             // 
-            // cmbCity
+            // cbCity
             // 
-            this.cmbCity.FormattingEnabled = true;
-            this.cmbCity.Location = new System.Drawing.Point(84, 165);
-            this.cmbCity.Name = "cmbCity";
-            this.cmbCity.Size = new System.Drawing.Size(239, 21);
-            this.cmbCity.TabIndex = 28;
+            this.cbCity.FormattingEnabled = true;
+            this.cbCity.Location = new System.Drawing.Point(84, 165);
+            this.cbCity.Name = "cbCity";
+            this.cbCity.Size = new System.Drawing.Size(239, 21);
+            this.cbCity.TabIndex = 28;
             // 
             // label3
             // 
@@ -179,13 +183,17 @@
             this.label6.TabIndex = 35;
             this.label6.Text = "Notes :";
             // 
-            // txtWordNote
+            // txtNotes
             // 
-            this.txtWordNote.Location = new System.Drawing.Point(84, 377);
-            this.txtWordNote.Multiline = true;
-            this.txtWordNote.Name = "txtWordNote";
-            this.txtWordNote.Size = new System.Drawing.Size(239, 68);
-            this.txtWordNote.TabIndex = 36;
+            this.txtNotes.Location = new System.Drawing.Point(84, 377);
+            this.txtNotes.Multiline = true;
+            this.txtNotes.Name = "txtNotes";
+            this.txtNotes.Size = new System.Drawing.Size(239, 68);
+            this.txtNotes.TabIndex = 36;
+            // 
+            // errorProvider1
+            // 
+            this.errorProvider1.ContainerControl = this;
             // 
             // NewWord
             // 
@@ -193,7 +201,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(406, 521);
-            this.Controls.Add(this.txtWordNote);
+            this.Controls.Add(this.txtNotes);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.txtLanguage);
             this.Controls.Add(this.label);
@@ -201,9 +209,9 @@
             this.Controls.Add(this.label4);
             this.Controls.Add(this.txtTranslation);
             this.Controls.Add(this.txtOriginal);
-            this.Controls.Add(this.cmbCity);
+            this.Controls.Add(this.cbCity);
             this.Controls.Add(this.label3);
-            this.Controls.Add(this.cmbTrip);
+            this.Controls.Add(this.cbTrip);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.btnSaveWord);
@@ -212,8 +220,10 @@
             this.Name = "NewWord";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "NewWord";
+            this.Load += new System.EventHandler(this.NewWord_Load);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -224,9 +234,9 @@
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btnSaveWord;
-        private System.Windows.Forms.ComboBox cmbTrip;
+        private System.Windows.Forms.ComboBox cbTrip;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.ComboBox cmbCity;
+        private System.Windows.Forms.ComboBox cbCity;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox txtOriginal;
         private System.Windows.Forms.TextBox txtTranslation;
@@ -235,6 +245,7 @@
         private System.Windows.Forms.Label label;
         private System.Windows.Forms.TextBox txtLanguage;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.TextBox txtWordNote;
+        private System.Windows.Forms.TextBox txtNotes;
+        private System.Windows.Forms.ErrorProvider errorProvider1;
     }
 }

@@ -14,5 +14,10 @@ namespace Rahhal_System1.Models
         public DateTime VisitDate { get; set; }
         public string Rating { get; set; } // From '1' to '5'
         public string Notes { get; set; }
+
+        public bool IsDeleted { get; set; }
+        public DateTime? UpdatedAt { get; set; }
+        public City City { get; set; }
+        public Trip Trip { get; set; }
     }
 }
