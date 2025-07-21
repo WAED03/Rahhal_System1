@@ -10,7 +10,6 @@ using System.Windows.Forms;
 using System.Data.SqlClient;
 using Rahhal_System1.DAL;
 
-
 namespace Rahhal_System1.Forms
 {
     public partial class NewWord : Form
