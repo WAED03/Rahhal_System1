@@ -228,8 +228,8 @@ INSERT INTO City (CountryID, CityName) VALUES
 -- Brazil (CountryID = 8)
 INSERT INTO City (CountryID, CityName) VALUES
     (8, 'Rio de Janeiro'),
-    (8, 'São Paulo'),
-    (8, 'Brasília');
+    (8, 'S?o Paulo'),
+    (8, 'Bras?lia');
 
 -- Canada (CountryID = 9)
 INSERT INTO City (CountryID, CityName) VALUES
@@ -252,7 +252,7 @@ INSERT INTO City (CountryID, CityName) VALUES
 -- Mexico (CountryID = 12)
 INSERT INTO City (CountryID, CityName) VALUES
     (12, 'Mexico City'),
-    (12, 'Cancún'),
+    (12, 'Canc?n'),
     (12, 'Guadalajara');
 
 -- New Zealand (CountryID = 13)
@@ -281,7 +281,7 @@ INSERT INTO City (CountryID, CityName) VALUES
 
 -- Maldives (CountryID = 17)
 INSERT INTO City (CountryID, CityName) VALUES
-    (17, 'Malé'),
+    (17, 'Mal�'),
     (17, 'Addu City'),
     (17, 'Fuvahmulah');
 
