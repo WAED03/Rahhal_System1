@@ -6,7 +6,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-
 namespace Rahhal_System1.Data
 {
     // كلاس ثابت يحتوي على البيانات المشتركة التي تُستخدم في كل أنحاء البرنامج
@@ -36,6 +35,7 @@ namespace Rahhal_System1.Data
             RefreshAll(); // تحميل البيانات الأساسية (المستخدمين والبلدان) وتفريغ الباقي
         }
 
+        // ✅ دالة لجلب كل المستخدمين من قاعدة البيانات عند بدء البرنامج
         // ✅ دالة لجلب كل المستخدمين من قاعدة البيانات
         public static void RefreshUsers() => UsersList = UserDAL.GetAllUsers();
 
