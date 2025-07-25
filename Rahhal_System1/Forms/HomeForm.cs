@@ -22,10 +22,11 @@ namespace Rahhal_System1.Forms
     public partial class HomeForm : Form
     {
         // متغيرات لتخزين اسم المستخدم والدور
-        private string currentUser, currentRole;
+        private string currentUser;
+        private UserRole currentRole;
 
         // دالة البناء - تُستدعى عند فتح الفورم لأول مرة
-        public HomeForm(string user, string role)
+        public HomeForm(string user, UserRole role)
         {
             InitializeComponent();
 

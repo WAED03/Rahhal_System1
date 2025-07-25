@@ -34,7 +34,7 @@ namespace Rahhal_System1.Forms
         private void LoadUsersToGrid()
         {
             // جلب جميع المستخدمين (بما فيهم المحذوفين منطقيًا)
-            GlobalData.UsersList = UserDAL.GetAllUsers();
+            GlobalData.RefreshUsers();
 
             dgViewUsers.DataSource = null;
             dgViewUsers.AutoGenerateColumns = true;

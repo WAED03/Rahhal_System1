@@ -30,9 +30,9 @@
         {
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.label = new System.Windows.Forms.Label();
-            this.txtMessage = new System.Windows.Forms.TextBox();
             this.Send = new System.Windows.Forms.Button();
+            this.txtMessage = new System.Windows.Forms.TextBox();
+            this.label = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.SuspendLayout();
@@ -51,29 +51,11 @@
             this.panel2.Controls.Add(this.Send);
             this.panel2.Controls.Add(this.txtMessage);
             this.panel2.Controls.Add(this.label);
+            this.panel2.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.panel2.Location = new System.Drawing.Point(342, 133);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(431, 334);
             this.panel2.TabIndex = 1;
-            // 
-            // label
-            // 
-            this.label.AutoSize = true;
-            this.label.Font = new System.Drawing.Font("Segoe Print", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label.ForeColor = System.Drawing.Color.DodgerBlue;
-            this.label.Location = new System.Drawing.Point(44, 42);
-            this.label.Name = "label";
-            this.label.Size = new System.Drawing.Size(178, 28);
-            this.label.TabIndex = 1;
-            this.label.Text = "Write your Message :";
-            // 
-            // txtMessage
-            // 
-            this.txtMessage.Location = new System.Drawing.Point(49, 85);
-            this.txtMessage.Multiline = true;
-            this.txtMessage.Name = "txtMessage";
-            this.txtMessage.Size = new System.Drawing.Size(324, 174);
-            this.txtMessage.TabIndex = 3;
             // 
             // Send
             // 
@@ -82,11 +64,30 @@
             this.Send.ForeColor = System.Drawing.Color.White;
             this.Send.Location = new System.Drawing.Point(49, 279);
             this.Send.Name = "Send";
-            this.Send.Size = new System.Drawing.Size(324, 27);
+            this.Send.Size = new System.Drawing.Size(324, 32);
             this.Send.TabIndex = 4;
             this.Send.Text = "Send";
             this.Send.UseVisualStyleBackColor = false;
             this.Send.Click += new System.EventHandler(this.btnSend_Click);
+            // 
+            // txtMessage
+            // 
+            this.txtMessage.Location = new System.Drawing.Point(49, 85);
+            this.txtMessage.Multiline = true;
+            this.txtMessage.Name = "txtMessage";
+            this.txtMessage.Size = new System.Drawing.Size(324, 188);
+            this.txtMessage.TabIndex = 3;
+            // 
+            // label
+            // 
+            this.label.AutoSize = true;
+            this.label.Font = new System.Drawing.Font("Segoe Print", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label.ForeColor = System.Drawing.Color.DodgerBlue;
+            this.label.Location = new System.Drawing.Point(42, 35);
+            this.label.Name = "label";
+            this.label.Size = new System.Drawing.Size(238, 37);
+            this.label.TabIndex = 1;
+            this.label.Text = "Write your Message :";
             // 
             // CallusUC
             // 

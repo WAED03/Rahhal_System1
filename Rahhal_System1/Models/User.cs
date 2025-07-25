@@ -6,6 +6,11 @@ using System.Threading.Tasks;
 
 namespace Rahhal_System1.Models
 {
+    public enum UserRole
+    {
+        Admin,       // مسؤول النظام
+        Regular      // مستخدم عادي
+    }
     public class User : ISoftDeletable
     {
         public int UserID { get; set; }
@@ -13,7 +18,7 @@ namespace Rahhal_System1.Models
         public string Email { get; set; }
         public string Password { get; set; }
         public DateTime JoinDate { get; set; }
-        public string Role { get; set; } // Admin or Regular
+        public UserRole Role { get; set; } // Admin or Regular
         public int FailedAttempts { get; set; }
         public DateTime? LastAttempt { get; set; }
 

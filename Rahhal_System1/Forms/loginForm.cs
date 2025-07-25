@@ -1,5 +1,6 @@
 ﻿using Rahhal_System1.DAL;
 using Rahhal_System1.Data;
+using Rahhal_System1.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -85,7 +86,7 @@ namespace Rahhal_System1.Forms
                     int userId = Convert.ToInt32(dr["UserID"]);
                     string userName = dr["UserName"].ToString();
                     string dbHash = dr["Password"].ToString();
-                    string role = dr["role"].ToString();
+                    UserRole role = (UserRole)Enum.Parse(typeof(UserRole), dr["role"].ToString());
                     int attempts = Convert.ToInt32(dr["failed_attempts"]);
                     DateTime lastTry = dr["last_attempt"] != DBNull.Value ? Convert.ToDateTime(dr["last_attempt"]) : DateTime.MinValue;
 
@@ -241,7 +242,7 @@ namespace Rahhal_System1.Forms
                         {
                             UserID = newUserId,
                             UserName = username,
-                            Role = "Regular"
+                            Role = UserRole.Regular
                         };
 
                         ActivityLogger.Log(con, "Register", "New user registered.");

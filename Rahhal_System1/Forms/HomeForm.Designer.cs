@@ -191,11 +191,11 @@
             // 
             this.lbl4.AutoSize = true;
             this.lbl4.BackColor = System.Drawing.Color.Transparent;
-            this.lbl4.Font = new System.Drawing.Font("Segoe Print", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbl4.ForeColor = System.Drawing.Color.DodgerBlue;
+            this.lbl4.Font = new System.Drawing.Font("Segoe Print", 11.25F, System.Drawing.FontStyle.Bold);
+            this.lbl4.ForeColor = System.Drawing.Color.RoyalBlue;
             this.lbl4.Location = new System.Drawing.Point(26, 27);
             this.lbl4.Name = "lbl4";
-            this.lbl4.Size = new System.Drawing.Size(79, 23);
+            this.lbl4.Size = new System.Drawing.Size(90, 26);
             this.lbl4.TabIndex = 31;
             this.lbl4.Text = "City name";
             // 
@@ -230,11 +230,11 @@
             // 
             this.lbl5.AutoSize = true;
             this.lbl5.BackColor = System.Drawing.Color.Transparent;
-            this.lbl5.Font = new System.Drawing.Font("Segoe Print", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbl5.ForeColor = System.Drawing.Color.DodgerBlue;
+            this.lbl5.Font = new System.Drawing.Font("Segoe Print", 11.25F, System.Drawing.FontStyle.Bold);
+            this.lbl5.ForeColor = System.Drawing.Color.RoyalBlue;
             this.lbl5.Location = new System.Drawing.Point(28, 27);
             this.lbl5.Name = "lbl5";
-            this.lbl5.Size = new System.Drawing.Size(79, 23);
+            this.lbl5.Size = new System.Drawing.Size(90, 26);
             this.lbl5.TabIndex = 32;
             this.lbl5.Text = "City name";
             // 
@@ -269,11 +269,11 @@
             // 
             this.lbl6.AutoSize = true;
             this.lbl6.BackColor = System.Drawing.Color.Transparent;
-            this.lbl6.Font = new System.Drawing.Font("Segoe Print", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbl6.ForeColor = System.Drawing.Color.DodgerBlue;
+            this.lbl6.Font = new System.Drawing.Font("Segoe Print", 11.25F, System.Drawing.FontStyle.Bold);
+            this.lbl6.ForeColor = System.Drawing.Color.RoyalBlue;
             this.lbl6.Location = new System.Drawing.Point(31, 27);
             this.lbl6.Name = "lbl6";
-            this.lbl6.Size = new System.Drawing.Size(79, 23);
+            this.lbl6.Size = new System.Drawing.Size(90, 26);
             this.lbl6.TabIndex = 33;
             this.lbl6.Text = "City name";
             // 
@@ -320,11 +320,11 @@
             // 
             this.label2.AutoSize = true;
             this.label2.BackColor = System.Drawing.Color.Transparent;
-            this.label2.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Font = new System.Drawing.Font("Segoe UI Black", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
             this.label2.Location = new System.Drawing.Point(23, 24);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(93, 17);
+            this.label2.Size = new System.Drawing.Size(114, 20);
             this.label2.TabIndex = 3;
             this.label2.Text = "Latest Visties :";
             // 
@@ -366,11 +366,11 @@
             // 
             this.lbl1.AutoSize = true;
             this.lbl1.BackColor = System.Drawing.Color.Transparent;
-            this.lbl1.Font = new System.Drawing.Font("Segoe Print", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbl1.ForeColor = System.Drawing.Color.DodgerBlue;
+            this.lbl1.Font = new System.Drawing.Font("Segoe Print", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbl1.ForeColor = System.Drawing.Color.RoyalBlue;
             this.lbl1.Location = new System.Drawing.Point(25, 28);
             this.lbl1.Name = "lbl1";
-            this.lbl1.Size = new System.Drawing.Size(80, 23);
+            this.lbl1.Size = new System.Drawing.Size(92, 26);
             this.lbl1.TabIndex = 30;
             this.lbl1.Text = "Trip name";
             // 
@@ -405,11 +405,11 @@
             // 
             this.lbl2.AutoSize = true;
             this.lbl2.BackColor = System.Drawing.Color.Transparent;
-            this.lbl2.Font = new System.Drawing.Font("Segoe Print", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbl2.ForeColor = System.Drawing.Color.DodgerBlue;
+            this.lbl2.Font = new System.Drawing.Font("Segoe Print", 11.25F, System.Drawing.FontStyle.Bold);
+            this.lbl2.ForeColor = System.Drawing.Color.RoyalBlue;
             this.lbl2.Location = new System.Drawing.Point(27, 28);
             this.lbl2.Name = "lbl2";
-            this.lbl2.Size = new System.Drawing.Size(80, 23);
+            this.lbl2.Size = new System.Drawing.Size(92, 26);
             this.lbl2.TabIndex = 31;
             this.lbl2.Text = "Trip name";
             // 
@@ -444,11 +444,11 @@
             // 
             this.lbl3.AutoSize = true;
             this.lbl3.BackColor = System.Drawing.Color.Transparent;
-            this.lbl3.Font = new System.Drawing.Font("Segoe Print", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbl3.ForeColor = System.Drawing.Color.DodgerBlue;
+            this.lbl3.Font = new System.Drawing.Font("Segoe Print", 11.25F, System.Drawing.FontStyle.Bold);
+            this.lbl3.ForeColor = System.Drawing.Color.RoyalBlue;
             this.lbl3.Location = new System.Drawing.Point(28, 28);
             this.lbl3.Name = "lbl3";
-            this.lbl3.Size = new System.Drawing.Size(80, 23);
+            this.lbl3.Size = new System.Drawing.Size(92, 26);
             this.lbl3.TabIndex = 32;
             this.lbl3.Text = "Trip name";
             // 
@@ -486,6 +486,7 @@
             // 
             this.panel2.Controls.Add(this.label1);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel2.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.panel2.Location = new System.Drawing.Point(0, 222);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(1115, 77);
@@ -495,11 +496,11 @@
             // 
             this.label1.AutoSize = true;
             this.label1.BackColor = System.Drawing.Color.Transparent;
-            this.label1.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Font = new System.Drawing.Font("Segoe UI Black", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
             this.label1.Location = new System.Drawing.Point(23, 46);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(83, 17);
+            this.label1.Size = new System.Drawing.Size(104, 20);
             this.label1.TabIndex = 1;
             this.label1.Text = "Latest Trips :";
             // 
@@ -523,11 +524,11 @@
             // 
             this.label5.AutoSize = true;
             this.label5.BackColor = System.Drawing.Color.Transparent;
-            this.label5.Font = new System.Drawing.Font("Segoe Print", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.Font = new System.Drawing.Font("Segoe Print", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
-            this.label5.Location = new System.Drawing.Point(835, 50);
+            this.label5.Location = new System.Drawing.Point(836, 50);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(45, 26);
+            this.label5.Size = new System.Drawing.Size(56, 33);
             this.label5.TabIndex = 31;
             this.label5.Text = "Fly !";
             // 
@@ -535,11 +536,11 @@
             // 
             this.label4.AutoSize = true;
             this.label4.BackColor = System.Drawing.Color.Transparent;
-            this.label4.Font = new System.Drawing.Font("Segoe Print", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.Font = new System.Drawing.Font("Segoe Print", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
-            this.label4.Location = new System.Drawing.Point(534, 95);
+            this.label4.Location = new System.Drawing.Point(522, 95);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(70, 26);
+            this.label4.Size = new System.Drawing.Size(88, 33);
             this.label4.TabIndex = 30;
             this.label4.Text = "Travel !";
             // 
@@ -547,11 +548,11 @@
             // 
             this.label3.AutoSize = true;
             this.label3.BackColor = System.Drawing.Color.Transparent;
-            this.label3.Font = new System.Drawing.Font("Segoe Print", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Font = new System.Drawing.Font("Segoe Print", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
-            this.label3.Location = new System.Drawing.Point(233, 162);
+            this.label3.Location = new System.Drawing.Point(232, 153);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(79, 26);
+            this.label3.Size = new System.Drawing.Size(100, 33);
             this.label3.TabIndex = 29;
             this.label3.Text = "Explore !";
             // 
@@ -758,7 +759,7 @@
             this.btnPhrase.Name = "btnPhrase";
             this.btnPhrase.Size = new System.Drawing.Size(78, 49);
             this.btnPhrase.TabIndex = 4;
-            this.btnPhrase.Text = "Phrase";
+            this.btnPhrase.Text = "Phrases";
             this.btnPhrase.UseVisualStyleBackColor = true;
             this.btnPhrase.Click += new System.EventHandler(this.btnPhrase_Click);
             // 
@@ -771,7 +772,7 @@
             this.btnAbout.Location = new System.Drawing.Point(339, 3);
             this.btnAbout.Name = "btnAbout";
             this.btnAbout.Size = new System.Drawing.Size(78, 49);
-            this.btnAbout.TabIndex = 9;
+            this.btnAbout.TabIndex = 5;
             this.btnAbout.Text = "About";
             this.btnAbout.UseVisualStyleBackColor = true;
             this.btnAbout.Click += new System.EventHandler(this.btnAbout_Click);
@@ -784,7 +785,7 @@
             this.btnCallUs.Location = new System.Drawing.Point(423, 3);
             this.btnCallUs.Name = "btnCallUs";
             this.btnCallUs.Size = new System.Drawing.Size(78, 49);
-            this.btnCallUs.TabIndex = 10;
+            this.btnCallUs.TabIndex = 6;
             this.btnCallUs.Text = "Call us";
             this.btnCallUs.UseVisualStyleBackColor = true;
             this.btnCallUs.Click += new System.EventHandler(this.btnCallUs_Click);
@@ -797,7 +798,7 @@
             this.btnExit.Location = new System.Drawing.Point(507, 3);
             this.btnExit.Name = "btnExit";
             this.btnExit.Size = new System.Drawing.Size(78, 49);
-            this.btnExit.TabIndex = 5;
+            this.btnExit.TabIndex = 7;
             this.btnExit.Text = "Exit";
             this.btnExit.UseVisualStyleBackColor = true;
             this.btnExit.Click += new System.EventHandler(this.btnExit_Click);

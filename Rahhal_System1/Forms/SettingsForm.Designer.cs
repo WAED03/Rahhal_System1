@@ -35,6 +35,7 @@
             this.btnEventsLog = new System.Windows.Forms.Button();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
@@ -44,7 +45,7 @@
             this.btnSwitchAccount.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnSwitchAccount.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnSwitchAccount.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.btnSwitchAccount.Location = new System.Drawing.Point(129, 118);
+            this.btnSwitchAccount.Location = new System.Drawing.Point(129, 140);
             this.btnSwitchAccount.Name = "btnSwitchAccount";
             this.btnSwitchAccount.Size = new System.Drawing.Size(234, 53);
             this.btnSwitchAccount.TabIndex = 0;
@@ -57,7 +58,7 @@
             this.btnMode.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnMode.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnMode.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.btnMode.Location = new System.Drawing.Point(129, 177);
+            this.btnMode.Location = new System.Drawing.Point(129, 199);
             this.btnMode.Name = "btnMode";
             this.btnMode.Size = new System.Drawing.Size(234, 53);
             this.btnMode.TabIndex = 1;
@@ -70,7 +71,7 @@
             this.btnViewUsers.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnViewUsers.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnViewUsers.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.btnViewUsers.Location = new System.Drawing.Point(129, 354);
+            this.btnViewUsers.Location = new System.Drawing.Point(129, 376);
             this.btnViewUsers.Name = "btnViewUsers";
             this.btnViewUsers.Size = new System.Drawing.Size(234, 53);
             this.btnViewUsers.TabIndex = 9;
@@ -83,7 +84,7 @@
             this.btnUsersMessages.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnUsersMessages.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnUsersMessages.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.btnUsersMessages.Location = new System.Drawing.Point(129, 295);
+            this.btnUsersMessages.Location = new System.Drawing.Point(129, 317);
             this.btnUsersMessages.Name = "btnUsersMessages";
             this.btnUsersMessages.Size = new System.Drawing.Size(234, 53);
             this.btnUsersMessages.TabIndex = 10;
@@ -96,7 +97,7 @@
             this.btnEventsLog.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnEventsLog.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnEventsLog.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.btnEventsLog.Location = new System.Drawing.Point(129, 236);
+            this.btnEventsLog.Location = new System.Drawing.Point(129, 258);
             this.btnEventsLog.Name = "btnEventsLog";
             this.btnEventsLog.Size = new System.Drawing.Size(234, 53);
             this.btnEventsLog.TabIndex = 11;
@@ -107,7 +108,7 @@
             // pictureBox2
             // 
             this.pictureBox2.Image = global::Rahhal_System1.Properties.Resources.Darkmode;
-            this.pictureBox2.Location = new System.Drawing.Point(71, 177);
+            this.pictureBox2.Location = new System.Drawing.Point(71, 199);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(52, 53);
             this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -117,12 +118,24 @@
             // pictureBox1
             // 
             this.pictureBox1.Image = global::Rahhal_System1.Properties.Resources.account;
-            this.pictureBox1.Location = new System.Drawing.Point(71, 118);
+            this.pictureBox1.Location = new System.Drawing.Point(71, 140);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(52, 53);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox1.TabIndex = 12;
             this.pictureBox1.TabStop = false;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.BackColor = System.Drawing.Color.Transparent;
+            this.label1.Font = new System.Drawing.Font("Segoe Print", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.ForeColor = System.Drawing.Color.Black;
+            this.label1.Location = new System.Drawing.Point(176, 38);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(139, 51);
+            this.label1.TabIndex = 14;
+            this.label1.Text = "Settings";
             // 
             // SettingsForm
             // 
@@ -130,6 +143,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(497, 494);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.pictureBox2);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.btnViewUsers);
@@ -144,6 +158,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -156,5 +171,6 @@
         private System.Windows.Forms.Button btnEventsLog;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.PictureBox pictureBox2;
+        private System.Windows.Forms.Label label1;
     }
 }

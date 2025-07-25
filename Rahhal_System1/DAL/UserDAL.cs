@@ -40,7 +40,7 @@ namespace Rahhal_System1.Models
                                 Email = reader["Email"].ToString(),         // البريد الإلكتروني
                                 Password = reader["Password"].ToString(),   // كلمة المرور
                                 JoinDate = Convert.ToDateTime(reader["JoinDate"]), // تاريخ الانضمام
-                                Role = reader["Role"].ToString(),           // دور المستخدم (Role)
+                                Role = (UserRole)Enum.Parse(typeof(UserRole), reader["Role"].ToString()),// دور المستخدم (Role)
                                 FailedAttempts = Convert.ToInt32(reader["failed_attempts"]), // عدد محاولات الدخول الفاشلة
                                 // التحقق إذا كان هناك تاريخ لمحاولة الدخول الأخيرة، وإلا وضع قيمة فارغة
                                 LastAttempt = reader["last_attempt"] != DBNull.Value

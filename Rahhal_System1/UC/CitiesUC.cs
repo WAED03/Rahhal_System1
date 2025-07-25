@@ -26,14 +26,11 @@ namespace Rahhal_System1.UC
         // دالة لتحميل زيارات المدن من قاعدة البيانات
         private void LoadCities()
         {
-            // الحصول على رقم المستخدم الحالي
-            int userId = ActivityLogger.CurrentUser.UserID;
-
-            // تحديث قائمة الرحلات من قاعدة البيانات
-            GlobalData.RefreshTrips(userId);
+            // تحديث الزيارات من قاعدة البيانات للمستخدم الحالي
+            GlobalData.RefreshTrips(ActivityLogger.CurrentUser.UserID);
 
             // إعادة تعيين قائمة زيارات المدن
-            GlobalData.CityVisitsList = new List<CityVisit>();
+            GlobalData.CityVisitsList.Clear();
 
             // تحميل كل زيارات المدن من كل رحلة
             foreach (var trip in GlobalData.TripsList)

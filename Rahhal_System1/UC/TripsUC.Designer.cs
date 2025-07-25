@@ -57,9 +57,9 @@
             this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
             this.label1.Location = new System.Drawing.Point(16, 59);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(141, 36);
+            this.label1.Size = new System.Drawing.Size(123, 36);
             this.label1.TabIndex = 0;
-            this.label1.Text = "Your Trips :";
+            this.label1.Text = "My Trips :";
             // 
             // panel1
             // 

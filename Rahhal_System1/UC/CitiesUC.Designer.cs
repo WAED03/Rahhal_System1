@@ -102,9 +102,9 @@
             this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
             this.label1.Location = new System.Drawing.Point(16, 59);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(144, 36);
+            this.label1.Size = new System.Drawing.Size(126, 36);
             this.label1.TabIndex = 0;
-            this.label1.Text = "Your Cities :";
+            this.label1.Text = "My Cities :";
             // 
             // CitiesUC
             // 

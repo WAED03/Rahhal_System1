@@ -1,4 +1,5 @@
 ﻿using Rahhal_System1.DAL; // استدعاء طبقة الوصول إلى البيانات
+using Rahhal_System1.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,10 +15,11 @@ namespace Rahhal_System1.Forms
 {
     public partial class SettingsForm : Form
     {
-        private string currentUser, currentRole; // متغيرات لتخزين اسم المستخدم والدور الخاص به
+        private string currentUser;
+        private UserRole currentRole; // متغيرات لتخزين اسم المستخدم والدور الخاص به
 
         // المُنشئ الذي يستقبل اسم المستخدم ودوره
-        public SettingsForm(string user, string role)
+        public SettingsForm(string user, UserRole role)
         {
             InitializeComponent(); // تهيئة مكونات الفورم
 
@@ -25,7 +27,7 @@ namespace Rahhal_System1.Forms
             currentRole = role; // حفظ دور المستخدم
 
             // إذا كان المستخدم عادي (ليس Admin)، يتم إخفاء بعض الأزرار المتعلقة بالصلاحيات الإدارية
-            if (role == "Regular")
+            if (role == UserRole.Regular)
             {
                 btnViewUsers.Visible = false;       // إخفاء زر عرض المستخدمين
                 btnUsersMessages.Visible = false;   // إخفاء زر رسائل المستخدمين

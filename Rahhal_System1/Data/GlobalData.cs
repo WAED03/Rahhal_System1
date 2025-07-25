@@ -9,41 +9,63 @@ using System.Threading.Tasks;
 
 namespace Rahhal_System1.Data
 {
+    // كلاس ثابت يحتوي على البيانات المشتركة التي تُستخدم في كل أنحاء البرنامج
     public static class GlobalData
     {
-        // ✅ القوائم العامة
-        public static List<User> UsersList { get; set; }
-        public static List<Country> CountriesList { get; set; }
-        public static List<City> CitiesList { get; set; }
-        public static List<Trip> TripsList { get; set; }
-        public static List<CityVisit> CityVisitsList { get; set; }
-        public static List<Phrase> PhrasesList { get; set; }
+        // ✅ قائمة المستخدمين – تُحمّل مرة واحدة وتبقى محفوظة في الذاكرة
+        public static List<User> UsersList { get; private set; } = new List<User>();
 
-        // ✅ يتم استدعاء هذا المُنشئ الثابت مرة واحدة عند أول استخدام للكلاس
+        // ✅ قائمة البلدان – نفس الشيء، تُحمّل عند بدء البرنامج
+        public static List<Country> CountriesList { get; private set; } = new List<Country>();
+
+        // ✅ قائمة المدن – تُحدّث حسب البلد المختار من قبل المستخدم
+        public static List<City> CitiesList { get; private set; } = new List<City>();
+
+        // ✅ قائمة الرحلات – تُحدّث حسب المستخدم
+        public static List<Trip> TripsList { get; private set; } = new List<Trip>();
+
+        // ✅ قائمة زيارات المدن داخل الرحلة – تُحدّث حسب الرحلة المختارة
+        public static List<CityVisit> CityVisitsList { get; private set; } = new List<CityVisit>();
+
+        // ✅ قائمة العبارات (الكلمات) – تُحدّث حسب المستخدم
+        public static List<Phrase> PhrasesList { get; private set; } = new List<Phrase>();
+
+        // ✅ هذا هو الـ static constructor – يتنفذ تلقائيًا مرة وحدة فقط عند أول استخدام للكلاس
         static GlobalData()
         {
-            RefreshAll();
+            RefreshAll(); // تحميل البيانات الأساسية (المستخدمين والبلدان) وتفريغ الباقي
         }
 
-        // ✅ دوال تحديث مستقلة لكل قائمة
+        // ✅ دالة لجلب كل المستخدمين من قاعدة البيانات
         public static void RefreshUsers() => UsersList = UserDAL.GetAllUsers();
+
+        // ✅ دالة لجلب جميع البلدان من قاعدة البيانات
         public static void RefreshCountries() => CountriesList = CountryDAL.GetAllCountries();
+
+        // ✅ دالة لجلب الرحلات الخاصة بمستخدم معين
         public static void RefreshTrips(int userId) => TripsList = TripDAL.GetTripsByUser(userId);
+
+        // ✅ دالة لجلب المدن الخاصة ببلد معين
         public static void RefreshCities(int countryId) => CitiesList = CityDAL.GetCitiesByCountry(countryId);
+
+        // ✅ دالة لجلب زيارات المدن الخاصة برحلة معينة
         public static void RefreshCityVisits(int tripId) => CityVisitsList = CityVisitDAL.GetVisitsByTrip(tripId);
+
+        // ✅ دالة لجلب العبارات الخاصة بمستخدم معين
         public static void RefreshPhrases(int userId) => PhrasesList = PhraseDAL.GetPhrasesByUser(userId);
 
-        // ✅ لتحديث الكل مرة واحدة عند بدء التطبيق (مع تحديد userId و countryId... إذا لزم)
+        // ✅ دالة تقوم بتحديث المستخدمين والبلدان، وتفرغ القوائم الأخرى
+        // (اللي تعتمد على اختيارات لاحقة مثل المستخدم أو البلد أو الرحلة)
         public static void RefreshAll()
         {
-            RefreshUsers();
-            RefreshCountries();
+            RefreshUsers();        // تحميل جميع المستخدمين
+            RefreshCountries();    // تحميل جميع البلدان
 
-            // ✳️ يُفضّل أن تحدد ID المستخدم أو البلد عند الاستخدام العملي
-            TripsList = new List<Trip>();
-            CitiesList = new List<City>();
-            CityVisitsList = new List<CityVisit>();
-            PhrasesList = new List<Phrase>();
+            // ✳️ تفريغ القوائم التي تعتمد على اختيارات المستخدم لاحقًا
+            TripsList.Clear();         // تفريغ الرحلات
+            CitiesList.Clear();        // تفريغ المدن
+            CityVisitsList.Clear();    // تفريغ زيارات المدن
+            PhrasesList.Clear();       // تفريغ العبارات
         }
     }
 }
