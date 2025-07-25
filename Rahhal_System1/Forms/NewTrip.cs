@@ -1,4 +1,4 @@
-﻿// المراجع المطلوبة للتعامل مع عناصر الفورم، الاتصال بقاعدة البيانات، والكائنات المخصصة
+﻿// مراجع مهمة للتعامل مع عناصر الفورم، قواعد البيانات، والكائنات المعرفة مسبقاً
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -9,79 +9,81 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.SqlClient;
-using Rahhal_System1.DAL;
+using Rahhal_System1.DAL;     // الوصول لطبقة التعامل مع البيانات (Data Access Layer)
+using Rahhal_System1.Models;  // الوصول لتعريف الكائنات (Models)
 
 namespace Rahhal_System1.Forms
 {
     public partial class NewTrip : Form
     {
-        // متغير لتخزين رقم الرحلة إذا كنا في وضع تعديل
+        // متغير لتخزين رقم الرحلة عند التعديل، nullable لأن الحالة ممكن تكون إضافة جديدة (null)
         private int? editingTripID = null;
 
-        // منشئ النموذج عند فتح الفورم لإضافة رحلة جديدة
+        // المنشئ الافتراضي لإنشاء نموذج جديد لإضافة رحلة
         public NewTrip()
         {
-            InitializeComponent(); // تهيئة عناصر الواجهة
-            FillTravelMethods();   // تعبئة وسيلة السفر داخل ComboBox
+            InitializeComponent();  // تهيئة مكونات الواجهة
+            FillTravelMethods();    // تعبئة قائمة وسائل السفر
+            this.Load += NewTrip_Load;  // ربط حدث تحميل الفورم مع الدالة NewTrip_Load
         }
 
-        // منشئ ثاني عند فتح النموذج للتعديل على رحلة موجودة
+        // منشئ ثاني خاص بحالة التعديل حيث يتم تمرير معرف الرحلة لتحميل بياناتها
         public NewTrip(int tripID) : this()
         {
-            editingTripID = tripID; // نحدد رقم الرحلة المراد تعديلها
+            editingTripID = tripID;  // حفظ معرف الرحلة التي سيتم تعديلها
         }
 
-        // عند تحميل النموذج
+        // دالة تشتغل عند تحميل الفورم
         private void NewTrip_Load(object sender, EventArgs e)
         {
-            FillTravelMethods(); // نعيد تعبئة ComboBox
+            FillTravelMethods();  // تعبئة ComboBox بوسائل السفر
 
-            // إذا كنا في وضع تعديل (أي لدينا TripID)
+            // إذا كان لدينا معرف رحلة (أي تعديل) نحمّل بيانات الرحلة
             if (editingTripID != null)
             {
-                LoadTripData((int)editingTripID); // تحميل بيانات الرحلة للتعديل
+                LoadTripData((int)editingTripID);
             }
         }
 
-        // دالة لتعبئة ComboBox بوسائل السفر المتاحة
+        // دالة تعبئة ComboBox بوسائل السفر المتاحة
         private void FillTravelMethods()
         {
-            cbTravelMethod.Items.Clear(); // نفرغ العناصر القديمة
+            cbTravelMethod.Items.Clear();  // تنظيف المحتوى القديم
             cbTravelMethod.Items.AddRange(new string[]
             {
-                "Airplane", "Ship", "Car", "Bus", "Boat", "Walking"
+                "Airplane", "Ship", "Car", "Bus", "Boat", "Walking"  // إضافة الخيارات
             });
-            cbTravelMethod.SelectedIndex = 0; // نختار أول عنصر كخيار افتراضي
+            cbTravelMethod.SelectedIndex = 0;  // اختيار أول عنصر تلقائياً
         }
 
-        // دالة للتحقق من صحة البيانات المدخلة من قبل المستخدم
+        // دالة التحقق من صحة البيانات المدخلة في الحقول
         private bool ValidateFields()
         {
             bool isValid = true;
-            errorProvider1.Clear(); // نزيل أي أخطاء سابقة
+            errorProvider1.Clear();  // إزالة أي أخطاء سابقة
 
-            // تحقق من اسم الرحلة
+            // التحقق من تعبئة اسم الرحلة
             if (string.IsNullOrWhiteSpace(txtTripName.Text))
             {
                 errorProvider1.SetError(txtTripName, "Please enter trip name");
                 isValid = false;
             }
 
-            // تحقق من اختيار وسيلة السفر
+            // التحقق من اختيار وسيلة السفر
             if (cbTravelMethod.SelectedItem == null)
             {
                 errorProvider1.SetError(cbTravelMethod, "Please select a travel method");
                 isValid = false;
             }
 
-            // التحقق أن تاريخ الانتهاء بعد تاريخ البداية
+            // التحقق من أن تاريخ الانتهاء بعد تاريخ البداية
             if (dtpEndDate.Value.Date < dtpStartDate.Value.Date)
             {
                 errorProvider1.SetError(dtpEndDate, "End date must be after start date");
                 isValid = false;
             }
 
-            // تحقق من وجود ملاحظات
+            // التحقق من وجود ملاحظات
             if (string.IsNullOrWhiteSpace(txtNotes.Text))
             {
                 errorProvider1.SetError(txtNotes, "Please enter notes");
@@ -91,89 +93,71 @@ namespace Rahhal_System1.Forms
             return isValid;
         }
 
-        // حدث الضغط على زر "حفظ الرحلة"
+        // حدث الضغط على زر حفظ الرحلة
         private void btnSaveTrip_Click(object sender, EventArgs e)
         {
-            // إذا كانت البيانات غير صحيحة، نوقف العملية
-            if (!ValidateFields()) return;
+            if (!ValidateFields()) return;  // التحقق من صحة الحقول، إذا خطأ نوقف التنفيذ
 
-            // استخراج البيانات من الحقول
-            string tripName = txtTripName.Text.Trim();
-            DateTime startDate = dtpStartDate.Value.Date;
-            DateTime endDate = dtpEndDate.Value.Date;
-            string travelMethod = cbTravelMethod.SelectedItem.ToString();
-            string notes = txtNotes.Text.Trim();
-
-            // فتح الاتصال بقاعدة البيانات
-            using (SqlConnection con = DbHelper.GetConnection())
+            // إنشاء كائن رحلة جديد وتعبئته من بيانات الواجهة
+            var trip = new Trip
             {
-                con.Open();
+                TripName = txtTripName.Text.Trim(),
+                StartDate = dtpStartDate.Value.Date,
+                EndDate = dtpEndDate.Value.Date,
+                TravelMethod = cbTravelMethod.SelectedItem.ToString(),
+                Notes = txtNotes.Text.Trim(),
+                UserID = ActivityLogger.CurrentUser.UserID  // ربط الرحلة بالمستخدم الحالي
+            };
 
-                SqlCommand cmd;
+            bool success;
 
-                // إذا كنا نضيف رحلة جديدة
-                if (editingTripID == null)
+            // التحقق هل هو إضافة جديدة أو تعديل
+            if (editingTripID == null)
+            {
+                success = TripDAL.AddTrip(trip);  // إضافة الرحلة الجديدة لقاعدة البيانات
+            }
+            else
+            {
+                trip.TripID = editingTripID.Value;  // تعيين معرف الرحلة للتعديل
+                success = TripDAL.UpdateTrip(trip);  // تعديل بيانات الرحلة في قاعدة البيانات
+            }
+
+            // إذا تمت العملية بنجاح
+            if (success)
+            {
+                string action = editingTripID == null ? "Add Trip" : "Update Trip";
+
+                // تسجيل النشاط في سجل الأحداث (اللوج)
+                using (var con = DbHelper.GetConnection())
                 {
-                    cmd = new SqlCommand(
-                        @"INSERT INTO Trip (UserID, TripName, StartDate, EndDate, TravelMethod, Notes)
-                          VALUES (@UserID, @TripName, @StartDate, @EndDate, @TravelMethod, @Notes)", con);
-                }
-                else
-                {
-                    // إذا كنا نعدل على رحلة موجودة
-                    cmd = new SqlCommand(
-                        @"UPDATE Trip 
-                          SET TripName = @TripName, StartDate = @StartDate, EndDate = @EndDate,
-                              TravelMethod = @TravelMethod, Notes = @Notes, UpdatedAt = GETDATE()
-                          WHERE TripID = @TripID", con);
-
-                    cmd.Parameters.AddWithValue("@TripID", editingTripID); // نضيف رقم الرحلة للتعديل
+                    con.Open();
+                    ActivityLogger.Log(con, action, $"Trip: {trip.TripName}");
                 }
 
-                // تمرير القيم كـ Parameters لحماية ضد SQL Injection
-                cmd.Parameters.AddWithValue("@UserID", ActivityLogger.CurrentUser.UserID);
-                cmd.Parameters.AddWithValue("@TripName", tripName);
-                cmd.Parameters.AddWithValue("@StartDate", startDate);
-                cmd.Parameters.AddWithValue("@EndDate", endDate);
-                cmd.Parameters.AddWithValue("@TravelMethod", travelMethod);
-                cmd.Parameters.AddWithValue("@Notes", notes);
-
-                cmd.ExecuteNonQuery(); // تنفيذ الأمر (إضافة أو تعديل)
-
-                // تسجيل النشاط في سجل الأحداث
-                string action = (editingTripID == null) ? "Add Trip" : "Update Trip";
-                ActivityLogger.Log(con, action, $"Trip: {tripName}");
-
-                // رسالة نجاح
+                // إظهار رسالة نجاح
                 MessageBox.Show(editingTripID == null ? "✅ Trip saved successfully." : "✏️ Trip updated successfully.");
-                this.DialogResult = DialogResult.OK; // نرجع OK كإشارة للواجهة الأصلية
-                this.Close(); // إغلاق النموذج
+
+                this.DialogResult = DialogResult.OK;  // إشارة للنافذة الأصلية أن العملية تمت بنجاح
+                this.Close();  // إغلاق نموذج الإضافة/التعديل
+            }
+            else
+            {
+                MessageBox.Show("❌ Operation failed.");  // رسالة خطأ في حالة فشل العملية
             }
         }
 
-        // دالة لتحميل بيانات رحلة معينة للتعديل
+        // دالة لتحميل بيانات رحلة معينة في حالة التعديل
         private void LoadTripData(int tripID)
         {
-            using (SqlConnection con = DbHelper.GetConnection())
+            Trip trip = TripDAL.GetTripById(tripID);  // جلب بيانات الرحلة من قاعدة البيانات
+            if (trip != null)
             {
-                con.Open();
-                SqlCommand cmd = new SqlCommand(
-                    @"SELECT TripName, StartDate, EndDate, TravelMethod, Notes 
-                      FROM Trip WHERE TripID = @TripID", con);
-                cmd.Parameters.AddWithValue("@TripID", tripID);
-
-                using (SqlDataReader reader = cmd.ExecuteReader())
-                {
-                    if (reader.Read())
-                    {
-                        // تعبئة الحقول من البيانات
-                        txtTripName.Text = reader["TripName"].ToString();
-                        dtpStartDate.Value = Convert.ToDateTime(reader["StartDate"]);
-                        dtpEndDate.Value = Convert.ToDateTime(reader["EndDate"]);
-                        cbTravelMethod.SelectedItem = reader["TravelMethod"].ToString();
-                        txtNotes.Text = reader["Notes"].ToString();
-                    }
-                }
+                // تعبئة الحقول بالبيانات التي تم جلبها
+                txtTripName.Text = trip.TripName;
+                dtpStartDate.Value = trip.StartDate;
+                dtpEndDate.Value = trip.EndDate;
+                cbTravelMethod.SelectedItem = trip.TravelMethod;
+                txtNotes.Text = trip.Notes;
             }
         }
     }

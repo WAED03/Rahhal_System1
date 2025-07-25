@@ -1,4 +1,5 @@
-﻿using Rahhal_System1.DAL;
+﻿// استيراد المساحات الضرورية للتعامل مع البيانات، القاعدة، النماذج، والواجهة
+using Rahhal_System1.DAL;
 using Rahhal_System1.Data;
 using Rahhal_System1.Models;
 using System;
@@ -20,155 +21,126 @@ namespace Rahhal_System1.Forms
     {
         public loginForm()
         {
-            InitializeComponent();
+            InitializeComponent(); // تحميل مكونات الفورم
         }
 
-        // عند تحميل الفورم، يتم عرض Panel تسجيل الدخول وإخفاء Panel التسجيل
-        private void loginForm_Load(object sender, EventArgs e)
-        {
-            SignInPanel.Visible = true;
-            SignUpPanel.Visible = false;
-            SignInPanel.BringToFront(); // إظهار تسجيل الدخول في المقدمة
-        }
-
-        // دالة لتطبيق حواف دائرية على أي عنصر (مثل زر أو Panel)
+        // دالة لتطبيق حواف دائرية على أي عنصر واجهة (زر، بانل، ...إلخ)
         void ApplyRoundedRegion(Control ctl, int radius)
         {
             Rectangle rect = ctl.ClientRectangle;
             GraphicsPath path = new GraphicsPath();
 
-            // رسم الحواف المنحنية
+            // رسم الحواف الدائرية حسب الزوايا الأربع
             path.StartFigure();
-            path.AddArc(rect.X, rect.Y, radius, radius, 180, 90);
-            path.AddArc(rect.Right - radius, rect.Y, radius, radius, 270, 90);
-            path.AddArc(rect.Right - radius, rect.Bottom - radius, radius, radius, 0, 90);
-            path.AddArc(rect.X, rect.Bottom - radius, radius, radius, 90, 90);
+            path.AddArc(rect.X, rect.Y, radius, radius, 180, 90); // الزاوية العليا اليسرى
+            path.AddArc(rect.Right - radius, rect.Y, radius, radius, 270, 90); // العليا اليمنى
+            path.AddArc(rect.Right - radius, rect.Bottom - radius, radius, radius, 0, 90); // السفلى اليمنى
+            path.AddArc(rect.X, rect.Bottom - radius, radius, radius, 90, 90); // السفلى اليسرى
             path.CloseFigure();
 
-            ctl.Region = new Region(path); // تطبيق الشكل الدائري على العنصر
+            ctl.Region = new Region(path); // تطبيق الشكل النهائي على العنصر
         }
 
-        // حدث الضغط على زر تسجيل الدخول
+        // عند تحميل الفورم يتم عرض واجهة تسجيل الدخول فقط
+        private void loginForm_Load(object sender, EventArgs e)
+        {
+            SignInPanel.Visible = true;
+            SignUpPanel.Visible = false;
+            SignInPanel.BringToFront(); // جعل Panel تسجيل الدخول في الواجهة الأمامية
+        }
+
+        // حدث عند الضغط على زر تسجيل الدخول
         private void btnSignIn_Click(object sender, EventArgs e)
         {
-            errorProvider1.Clear(); // مسح الأخطاء السابقة
+            errorProvider1.Clear(); // مسح الأخطاء السابقة من الواجهة
 
-            string username = txtInUsername.Text.Trim();
-            string password = txtInPassword.Text;
+            string username = txtInUsername.Text.Trim(); // اسم المستخدم من التكست
+            string password = txtInPassword.Text;        // كلمة المرور من التكست
 
-            // التحقق من إدخال اسم المستخدم وكلمة المرور
-            if (username == "")
+            // التحقق من أن اسم المستخدم وكلمة المرور غير فارغين
+            if (string.IsNullOrEmpty(username))
             {
                 errorProvider1.SetError(txtInUsername, "please enter username");
                 return;
             }
-            else if (password == "")
+            if (string.IsNullOrEmpty(password))
             {
                 errorProvider1.SetError(txtInPassword, "please enter password");
                 return;
             }
 
-            // تشفير كلمة المرور المدخلة
+            User user;
+            try
+            {
+                // جلب بيانات المستخدم من قاعدة البيانات عن طريق DAL
+                user = UserDAL.GetUserByUsername(username);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error accessing database: " + ex.Message);
+                return;
+            }
+
+            if (user == null)
+            {
+                // المستخدم غير موجود
+                ActivityLogger.CurrentUser = null;
+                MessageBox.Show("User not found");
+                return;
+            }
+
+            // التحقق من عدد المحاولات الفاشلة وتحديد مدة الحظر المؤقت
+            if (user.FailedAttempts >= 5 && DateTime.Now < user.LastAttempt?.AddHours(12))
+            {
+                MessageBox.Show("Account banned for 12 hours");
+                return;
+            }
+            if (user.FailedAttempts == 4 && DateTime.Now < user.LastAttempt?.AddMinutes(5))
+            {
+                MessageBox.Show("Account banned for 5 minutes");
+                return;
+            }
+            if (user.FailedAttempts == 3 && DateTime.Now < user.LastAttempt?.AddMinutes(1))
+            {
+                MessageBox.Show("Account banned for 1 minute");
+                return;
+            }
+
+            // تشفير كلمة المرور المدخلة لمقارنتها مع المخزنة
             string hash = SecurityHelper.HashSHA256(password);
 
-            using (SqlConnection con = DbHelper.GetConnection())
+            if (user.Password == hash)
             {
-                con.Open();
+                // كلمة المرور صحيحة - تسجيل دخول ناجح
+                ActivityLogger.CurrentUser = user;
 
-                // البحث عن المستخدم حسب الاسم وتجاهل المحذوفين
-                SqlCommand cmd = new SqlCommand("SELECT * FROM [User] WHERE UserName = @u AND IsDeleted = 0", con);
-                cmd.Parameters.AddWithValue("@u", username);
-                SqlDataReader dr = cmd.ExecuteReader();
-
-                if (dr.Read()) // تم العثور على المستخدم
+                using (var con = DbHelper.GetConnection())
                 {
-                    // قراءة البيانات من قاعدة البيانات
-                    int userId = Convert.ToInt32(dr["UserID"]);
-                    string userName = dr["UserName"].ToString();
-                    string dbHash = dr["Password"].ToString();
-                    UserRole role = (UserRole)Enum.Parse(typeof(UserRole), dr["role"].ToString());
-                    int attempts = Convert.ToInt32(dr["failed_attempts"]);
-                    DateTime lastTry = dr["last_attempt"] != DBNull.Value ? Convert.ToDateTime(dr["last_attempt"]) : DateTime.MinValue;
-
-                    dr.Close();
-
-                    // تحقق من الحظر المؤقت بناءً على عدد المحاولات السابقة
-                    if (attempts >= 5 && DateTime.Now < lastTry.AddHours(12))
-                    {
-                        MessageBox.Show("Account banned for 12 hours");
-                        return;
-                    }
-                    if (attempts == 4 && DateTime.Now < lastTry.AddMinutes(5))
-                    {
-                        MessageBox.Show("Account banned for 5 minutes");
-                        return;
-                    }
-                    if (attempts == 3 && DateTime.Now < lastTry.AddMinutes(1))
-                    {
-                        MessageBox.Show("Account banned for 1 minute");
-                        return;
-                    }
-
-                    // مقارنة كلمة المرور المشفرة مع الموجودة في قاعدة البيانات
-                    if (dbHash == hash)
-                    {
-                        // تسجيل الدخول الناجح
-                        ActivityLogger.CurrentUser = new Rahhal_System1.Models.User
-                        {
-                            UserID = userId,
-                            UserName = userName,
-                            Role = role
-                        };
-
-                        ActivityLogger.Log(con, "Login", "User logged in successfully.");
-
-                        // إعادة تعيين عدد المحاولات إلى 0
-                        SqlCommand reset = new SqlCommand("UPDATE [User] SET failed_attempts = 0 WHERE UserName = @u AND IsDeleted = 0", con);
-                        reset.Parameters.AddWithValue("@u", username);
-                        reset.ExecuteNonQuery();
-
-                        // فتح الفورم الرئيسي
-                        this.Hide();
-                        new HomeForm(username, role).Show();
-                    }
-                    else
-                    {
-                        // تسجيل محاولة فاشلة
-                        UpdateAttempts(con, username, attempts + 1);
-
-                        ActivityLogger.CurrentUser = new Rahhal_System1.Models.User
-                        {
-                            UserID = userId,
-                            UserName = userName,
-                            Role = role
-                        };
-                        ActivityLogger.Log(con, "Failed Login", $"Incorrect password (Attempt {attempts + 1}).");
-
-                        MessageBox.Show("The password is incorrect");
-                    }
+                    con.Open();
+                    ActivityLogger.Log(con, "Login", "User logged in successfully."); // تسجيل الحدث
                 }
-                else
+
+                UserDAL.ResetFailedAttempts(username); // إعادة تعيين عدد المحاولات
+
+                this.Hide(); // إخفاء الفورم الحالي
+                new HomeForm(user.UserName, user.Role).Show(); // فتح الفورم الرئيسي
+            }
+            else
+            {
+                // كلمة المرور غير صحيحة
+                UserDAL.UpdateFailedAttempts(username, user.FailedAttempts + 1); // تحديث عدد المحاولات
+
+                using (var con = DbHelper.GetConnection())
                 {
-                    // المستخدم غير موجود
-                    ActivityLogger.CurrentUser = null;
-                    ActivityLogger.Log(con, "Failed Login", $"Login attempt for non-existent user: {username}");
-
-                    MessageBox.Show("User not found");
+                    con.Open();
+                    ActivityLogger.Log(con, "Failed Login", $"Incorrect password (Attempt {user.FailedAttempts + 1})."); // تسجيل فشل الدخول
                 }
+
+                MessageBox.Show("The password is incorrect");
             }
         }
 
-        // دالة لتحديث عدد المحاولات وتاريخ آخر محاولة فاشلة
-        private void UpdateAttempts(SqlConnection con, string username, int count)
-        {
-            SqlCommand cmd = new SqlCommand("UPDATE [User] SET failed_attempts = @a, last_attempt = @t WHERE UserName = @u AND IsDeleted = 0", con);
-            cmd.Parameters.AddWithValue("@a", count);
-            cmd.Parameters.AddWithValue("@t", DateTime.Now);
-            cmd.Parameters.AddWithValue("@u", username);
-            cmd.ExecuteNonQuery();
-        }
-
-        // حدث الضغط على زر "Sign Up"
+        // حدث عند الضغط على زر إنشاء حساب (Sign Up)
         private void btnSignUp_Click(object sender, EventArgs e)
         {
             errorProvider1.Clear(); // مسح الأخطاء السابقة
@@ -178,91 +150,89 @@ namespace Rahhal_System1.Forms
             string password = txtUpPass.Text;
             string confirm = txtConfirmPassword.Text;
 
-            // تعابير Regex للتحقق من صحة البيانات
-            Regex rUser = new Regex(@"^[A-Za-z]\w{4,}$"); // يبدأ بحرف وطوله ≥ 5
-            Regex rPass = new Regex(@"^(?=.*\d)(?=.*\W).{8,}$"); // يحتوي على رقم ورمز وطوله ≥ 8
-            Regex rEmail = new Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$"); // تحقق من صيغة البريد
+            // تعابير Regex للتحقق من صحة البيانات المدخلة
+            Regex rUser = new Regex(@"^[A-Za-z]\w{4,}$");              // اسم المستخدم يبدأ بحرف وطوله ≥ 5
+            Regex rPass = new Regex(@"^(?=.*\d)(?=.*\W).{8,}$");       // كلمة المرور تحتوي على رقم ورمز وطول ≥ 8
+            Regex rEmail = new Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$");   // بريد إلكتروني صحيح
 
-            // التحقق من البيانات واحدة واحدة
+            // التحقق من صلاحية اسم المستخدم
             if (!rUser.IsMatch(username))
             {
                 errorProvider1.SetError(txtUpUsername, "Username must start with a letter and contain at least 5 characters.");
                 return;
             }
+
+            // التحقق من صلاحية البريد الإلكتروني
             if (!rEmail.IsMatch(email))
             {
                 errorProvider1.SetError(txtUpEmail, "Invalid email format");
                 return;
             }
+
+            // التحقق من قوة كلمة المرور
             if (!rPass.IsMatch(password))
             {
                 errorProvider1.SetError(txtUpPass, "Password must contain at least 8 characters including numbers and symbols.");
                 return;
             }
+
+            // التأكد من تطابق كلمتي المرور
             if (password != confirm)
             {
                 errorProvider1.SetError(txtConfirmPassword, "Password does not match");
                 return;
             }
 
-            string hash = SecurityHelper.HashSHA256(password); // تشفير كلمة المرور
+            // تشفير كلمة المرور
+            string hash = SecurityHelper.HashSHA256(password);
 
-            using (SqlConnection con = DbHelper.GetConnection())
+            // إنشاء كائن مستخدم جديد
+            var newUser = new User
             {
-                con.Open();
+                UserName = username,
+                Email = email,
+                Password = hash,
+                JoinDate = DateTime.Now.Date,
+                Role = UserRole.Regular
+            };
 
-                // إضافة مستخدم جديد وإرجاع UserID الجديد
-                string sql = @"
-            INSERT INTO [User] (UserName, Email, Password, JoinDate, Role, failed_attempts, last_attempt)
-            OUTPUT INSERTED.UserID
-            VALUES (@username, @email, @password, @date, @role, 0, GETDATE())";
+            try
+            {
+                // محاولة حفظ المستخدم الجديد
+                int? newUserId = UserDAL.AddUser(newUser);
 
-                using (SqlCommand cmd = new SqlCommand(sql, con))
+                if (newUserId == null)
                 {
-                    cmd.Parameters.AddWithValue("@username", username);
-                    cmd.Parameters.AddWithValue("@email", email);
-                    cmd.Parameters.AddWithValue("@password", hash);
-                    cmd.Parameters.AddWithValue("@date", DateTime.Now.Date);
-                    cmd.Parameters.AddWithValue("@role", "Regular");
-
-                    try
-                    {
-                        object result = cmd.ExecuteScalar(); // استرجاع ID
-
-                        if (result == null || result == DBNull.Value)
-                        {
-                            MessageBox.Show("⚠️ Failed to retrieve new user ID using OUTPUT INSERTED.");
-                            return;
-                        }
-
-                        int newUserId = Convert.ToInt32(result);
-
-                        // حفظ المستخدم الحالي لغرض التسجيل
-                        ActivityLogger.CurrentUser = new Rahhal_System1.Models.User
-                        {
-                            UserID = newUserId,
-                            UserName = username,
-                            Role = UserRole.Regular
-                        };
-
-                        ActivityLogger.Log(con, "Register", "New user registered.");
-
-                        MessageBox.Show("The account has been created successfully. You can now log in.");
-
-                        lblSignIn_Click(null, null); // الانتقال إلى واجهة تسجيل الدخول
-                    }
-                    catch (SqlException ex)
-                    {
-                        if (ex.Number == 2627)
-                            MessageBox.Show("Email is already in use.");
-                        else
-                            MessageBox.Show("An error occurred while saving data: " + ex.Message);
-                    }
+                    MessageBox.Show("⚠️ Failed to retrieve new user ID.");
+                    return;
                 }
+
+                // تسجيل المستخدم كـ currentUser
+                ActivityLogger.CurrentUser = new User
+                {
+                    UserID = newUserId.Value,
+                    UserName = username,
+                    Role = UserRole.Regular
+                };
+
+                using (var con = DbHelper.GetConnection())
+                {
+                    con.Open();
+                    ActivityLogger.Log(con, "Register", "New user registered.");
+                }
+
+                MessageBox.Show("The account has been created successfully. You can now log in.");
+
+                // العودة إلى واجهة تسجيل الدخول
+                lblSignIn_Click(null, null);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred while saving data: " + ex.Message);
             }
         }
 
-        // زر التبديل إلى واجهة تسجيل الدخول
+        // عند الضغط على زر "Sign In" يتم عرض واجهة تسجيل الدخول
         private void lblSignIn_Click(object sender, EventArgs e)
         {
             SignInPanel.Visible = true;
@@ -270,7 +240,7 @@ namespace Rahhal_System1.Forms
             SignUpPanel.Visible = false;
         }
 
-        // زر التبديل إلى واجهة التسجيل
+        // عند الضغط على زر "Sign Up" يتم عرض واجهة إنشاء الحساب
         private void lblSignUp_Click(object sender, EventArgs e)
         {
             SignUpPanel.Visible = true;

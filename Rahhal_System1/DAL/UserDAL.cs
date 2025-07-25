@@ -61,36 +61,6 @@ namespace Rahhal_System1.DAL
             return users;
         }
 
-        // دالة لإضافة مستخدم جديد إلى قاعدة البيانات
-        public static bool AddUser(User user)
-        {
-            using (SqlConnection con = DbHelper.GetConnection())
-            {
-                // أمر SQL للإضافة مع تحديد الحقول والقيم باستخدام باراميترات
-                using (SqlCommand cmd = new SqlCommand(
-                    @"INSERT INTO [User] 
-                      (UserName, Email, Password, JoinDate, Role, failed_attempts, last_attempt, IsDeleted, UpdatedAt) 
-                      VALUES 
-                      (@UserName, @Email, @Password, @JoinDate, @Role, @FailedAttempts, @LastAttempt, @IsDeleted, @UpdatedAt)", con))
-                {
-                    // تعيين قيم الباراميترات من كائن المستخدم
-                    cmd.Parameters.AddWithValue("@UserName", user.UserName);
-                    cmd.Parameters.AddWithValue("@Email", user.Email);
-                    cmd.Parameters.AddWithValue("@Password", user.Password);
-                    cmd.Parameters.AddWithValue("@JoinDate", user.JoinDate);
-                    cmd.Parameters.AddWithValue("@Role", user.Role);
-                    cmd.Parameters.AddWithValue("@FailedAttempts", user.FailedAttempts);
-                    // التعامل مع إمكانية وجود قيمة فارغة للتاريخ
-                    cmd.Parameters.AddWithValue("@LastAttempt", user.LastAttempt.HasValue ? (object)user.LastAttempt.Value : DBNull.Value);
-                    cmd.Parameters.AddWithValue("@IsDeleted", user.IsDeleted);
-                    cmd.Parameters.AddWithValue("@UpdatedAt", user.UpdatedAt.HasValue ? (object)user.UpdatedAt.Value : DBNull.Value);
-
-                    con.Open(); // فتح الاتصال
-                    // تنفيذ الأمر وإرجاع true إذا تم الإضافة بنجاح (عدد الصفوف المتأثرة أكبر من 0)
-                    return cmd.ExecuteNonQuery() > 0;
-                }
-            }
-        }
 
         // دالة لتحديث بيانات مستخدم موجود
         public static bool UpdateUser(User user)
@@ -144,5 +114,111 @@ namespace Rahhal_System1.DAL
                 }
             }
         }
+
+        // دالة لجلب مستخدم واحد حسب اسم المستخدم، مع تعبئة كل البيانات اللازمة
+        public static User GetUserByUsername(string username)
+        {
+            User user = null;
+            using (SqlConnection con = DbHelper.GetConnection())
+            {
+                con.Open();
+                using (SqlCommand cmd = new SqlCommand("SELECT * FROM [User] WHERE UserName = @u AND IsDeleted = 0", con))
+                {
+                    cmd.Parameters.AddWithValue("@u", username);
+                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    {
+                        if (dr.Read())
+                        {
+                            user = new User
+                            {
+                                UserID = Convert.ToInt32(dr["UserID"]),
+                                UserName = dr["UserName"].ToString(),
+                                Password = dr["Password"].ToString(),
+                                Role = (UserRole)Enum.Parse(typeof(UserRole), dr["Role"].ToString()),
+                                FailedAttempts = Convert.ToInt32(dr["failed_attempts"]),
+                                LastAttempt = dr["last_attempt"] != DBNull.Value ? (DateTime?)Convert.ToDateTime(dr["last_attempt"]) : null,
+                                IsDeleted = Convert.ToBoolean(dr["IsDeleted"]),
+                                UpdatedAt = dr["UpdatedAt"] != DBNull.Value ? (DateTime?)Convert.ToDateTime(dr["UpdatedAt"]) : null,
+                                Email = dr["Email"].ToString(),
+                                JoinDate = Convert.ToDateTime(dr["JoinDate"])
+                            };
+                        }
+                    }
+                }
+            }
+            return user;
+        }
+
+        // دالة لتحديث عدد محاولات الدخول الفاشلة وتاريخ آخر محاولة
+        public static bool UpdateFailedAttempts(string username, int attempts)
+        {
+            using (SqlConnection con = DbHelper.GetConnection())
+            {
+                con.Open();
+                using (SqlCommand cmd = new SqlCommand("UPDATE [User] SET failed_attempts = @a, last_attempt = @t WHERE UserName = @u AND IsDeleted = 0", con))
+                {
+                    cmd.Parameters.AddWithValue("@a", attempts);
+                    cmd.Parameters.AddWithValue("@t", DateTime.Now);
+                    cmd.Parameters.AddWithValue("@u", username);
+
+                    return cmd.ExecuteNonQuery() > 0;
+                }
+            }
+        }
+
+        // دالة لإعادة تعيين محاولات الدخول إلى صفر بعد تسجيل دخول ناجح
+        public static bool ResetFailedAttempts(string username)
+        {
+            using (SqlConnection con = DbHelper.GetConnection())
+            {
+                con.Open();
+                using (SqlCommand cmd = new SqlCommand("UPDATE [User] SET failed_attempts = 0 WHERE UserName = @u AND IsDeleted = 0", con))
+                {
+                    cmd.Parameters.AddWithValue("@u", username);
+                    return cmd.ExecuteNonQuery() > 0;
+                }
+            }
+        }
+
+        // دالة لإضافة مستخدم جديد مع إرجاع معرف المستخدم الجديد (ID)
+        public static int? AddUser(User user)
+        {
+            using (SqlConnection con = DbHelper.GetConnection())
+            {
+                con.Open();
+
+                string sql = @"
+                    INSERT INTO [User] (UserName, Email, Password, JoinDate, Role, failed_attempts, last_attempt)
+                    OUTPUT INSERTED.UserID
+                    VALUES (@username, @email, @password, @date, @role, 0, GETDATE())";
+
+                using (SqlCommand cmd = new SqlCommand(sql, con))
+                {
+                    cmd.Parameters.AddWithValue("@username", user.UserName);
+                    cmd.Parameters.AddWithValue("@email", user.Email);
+                    cmd.Parameters.AddWithValue("@password", user.Password);
+                    cmd.Parameters.AddWithValue("@date", user.JoinDate);
+                    cmd.Parameters.AddWithValue("@role", user.Role.ToString());
+
+                    try
+                    {
+                        object result = cmd.ExecuteScalar();
+                        if (result == null || result == DBNull.Value)
+                        {
+                            return null;
+                        }
+                        return Convert.ToInt32(result);
+                    }
+                    catch (SqlException ex)
+                    {
+                        if (ex.Number == 2627)
+                            throw new Exception("Email is already in use.");
+                        else
+                            throw;
+                    }
+                }
+            }
+        }
     }
 }
+

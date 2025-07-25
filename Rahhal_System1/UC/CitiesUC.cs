@@ -146,33 +146,19 @@ namespace Rahhal_System1.UC
             using (var con = DbHelper.GetConnection())
             {
                 con.Open();
-                SqlTransaction transaction = con.BeginTransaction(); // فتح ترانزكشن
+                SqlTransaction transaction = con.BeginTransaction();
 
                 try
                 {
-                    // 1. تحديث زيارة المدينة إلى محذوف
-                    SqlCommand cmdVisit = new SqlCommand("UPDATE CityVisit SET IsDeleted = 1, UpdatedAt = GETDATE() WHERE VisitID = @VisitID", con, transaction);
-                    cmdVisit.Parameters.AddWithValue("@VisitID", visitID);
-                    cmdVisit.ExecuteNonQuery();
+                    CityVisitDAL.SoftDeleteCityVisitWithPhrases(visitID, cityName, con, transaction);
+                    transaction.Commit();
 
-                    // 2. تحديث كل العبارات المرتبطة بالزيارة إلى محذوف
-                    SqlCommand cmdPhrases = new SqlCommand("UPDATE Phrase SET IsDeleted = 1, UpdatedAt = GETDATE() WHERE VisitID = @VisitID", con, transaction);
-                    cmdPhrases.Parameters.AddWithValue("@VisitID", visitID);
-                    cmdPhrases.ExecuteNonQuery();
-
-                    // 3. تسجيل العملية في سجل النشاط
-                    ActivityLogger.Log(con, transaction, "SoftDelete CityVisit", $"Soft-deleted city visit '{cityName}' (VisitID = {visitID})");
-
-                    transaction.Commit(); // تأكيد التغييرات
-
-                    // تحديث البيانات في الذاكرة
                     GlobalData.RefreshCityVisits(ActivityLogger.CurrentTripID);
-
                     MessageBox.Show("🗑️ City visit deleted successfully.");
                 }
                 catch (Exception ex)
                 {
-                    transaction.Rollback(); // التراجع عن التغييرات في حالة خطأ
+                    transaction.Rollback();
                     MessageBox.Show("❌ Error during delete: " + ex.Message);
                 }
             }

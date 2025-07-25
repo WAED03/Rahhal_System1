@@ -78,6 +78,82 @@ namespace Rahhal_System1.DAL
             return visits; // إرجاع قائمة الزيارات
         }
 
+            // إضافة زيارة جديدة
+            public static bool AddVisit(CityVisit visit)
+            {
+                using (SqlConnection con = DbHelper.GetConnection())
+                {
+                    SqlCommand cmd = new SqlCommand(
+                        @"INSERT INTO CityVisit (TripID, CityID, VisitDate, Rating, Notes)
+                  VALUES (@TripID, @CityID, @VisitDate, @Rating, @Notes)", con);
+
+                    cmd.Parameters.AddWithValue("@TripID", visit.TripID);
+                    cmd.Parameters.AddWithValue("@CityID", visit.CityID);
+                    cmd.Parameters.AddWithValue("@VisitDate", visit.VisitDate);
+                    cmd.Parameters.AddWithValue("@Rating", visit.Rating);
+                    cmd.Parameters.AddWithValue("@Notes", visit.Notes);
+
+                    con.Open();
+                    return cmd.ExecuteNonQuery() > 0;
+                }
+            }
+
+            // تعديل زيارة موجودة
+            public static bool UpdateVisit(CityVisit visit)
+            {
+                using (SqlConnection con = DbHelper.GetConnection())
+                {
+                    SqlCommand cmd = new SqlCommand(
+                        @"UPDATE CityVisit 
+                  SET TripID = @TripID, CityID = @CityID, VisitDate = @VisitDate, Rating = @Rating, Notes = @Notes, UpdatedAt = GETDATE()
+                  WHERE VisitID = @VisitID", con);
+
+                    cmd.Parameters.AddWithValue("@VisitID", visit.VisitID);
+                    cmd.Parameters.AddWithValue("@TripID", visit.TripID);
+                    cmd.Parameters.AddWithValue("@CityID", visit.CityID);
+                    cmd.Parameters.AddWithValue("@VisitDate", visit.VisitDate);
+                    cmd.Parameters.AddWithValue("@Rating", visit.Rating);
+                    cmd.Parameters.AddWithValue("@Notes", visit.Notes);
+
+                    con.Open();
+                    return cmd.ExecuteNonQuery() > 0;
+                }
+            }
+
+            // جلب زيارة واحدة بناءً على VisitID
+            public static CityVisit GetVisitById(int visitID)
+            {
+                using (SqlConnection con = DbHelper.GetConnection())
+                {
+                    SqlCommand cmd = new SqlCommand(
+                        @"SELECT TripID, CityID, VisitDate, Rating, Notes 
+                  FROM CityVisit 
+                  WHERE VisitID = @VisitID", con);
+
+                    cmd.Parameters.AddWithValue("@VisitID", visitID);
+
+                    con.Open();
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            return new CityVisit
+                            {
+                                VisitID = visitID,
+                                TripID = Convert.ToInt32(reader["TripID"]),
+                                CityID = Convert.ToInt32(reader["CityID"]),
+                                VisitDate = Convert.ToDateTime(reader["VisitDate"]),
+                                Rating = reader["Rating"].ToString(),
+                                Notes = reader["Notes"].ToString()
+                            };
+                        }
+                    }
+
+                    return null;
+                }
+            }
+        
+
         /// <summary>
         /// تنفيذ الحذف الناعم لزيارة مدينة بناءً على رقم الزيارة
         /// </summary>
@@ -96,5 +172,24 @@ namespace Rahhal_System1.DAL
                 }
             }
         }
+
+        public static bool SoftDeleteCityVisitWithPhrases(int visitID, string cityName, SqlConnection con, SqlTransaction transaction)
+        {
+            // 1. حذف زيارة المدينة
+            SqlCommand cmdVisit = new SqlCommand("UPDATE CityVisit SET IsDeleted = 1, UpdatedAt = GETDATE() WHERE VisitID = @VisitID", con, transaction);
+            cmdVisit.Parameters.AddWithValue("@VisitID", visitID);
+            cmdVisit.ExecuteNonQuery();
+
+            // 2. حذف العبارات المرتبطة
+            SqlCommand cmdPhrases = new SqlCommand("UPDATE Phrase SET IsDeleted = 1, UpdatedAt = GETDATE() WHERE VisitID = @VisitID", con, transaction);
+            cmdPhrases.Parameters.AddWithValue("@VisitID", visitID);
+            cmdPhrases.ExecuteNonQuery();
+
+            // 3. تسجيل الحدث
+            ActivityLogger.Log(con, transaction, "SoftDelete CityVisit", $"Soft-deleted city visit '{cityName}' (VisitID = {visitID})");
+
+            return true;
+        }
+
     }
 }

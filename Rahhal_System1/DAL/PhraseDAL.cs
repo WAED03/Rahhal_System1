@@ -1,56 +1,46 @@
-﻿using Rahhal_System1.DAL;
-using Rahhal_System1.Models;
+﻿using Rahhal_System1.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rahhal_System1.DAL
 {
-    // كلاس مسؤول عن العمليات الخاصة بجمل الترجمة (Phrase) من قاعدة البيانات
     public class PhraseDAL
     {
-        // دالة لاسترجاع جميع الجمل المرتبطة بمستخدم معين (حسب الرحلات)
+        // جلب كل العبارات المرتبطة بمستخدم معين حسب رحلاته
         public static List<Phrase> GetPhrasesByUser(int userId)
         {
-            var phrases = new List<Phrase>(); // قائمة لتخزين الجمل المسترجعة
+            var phrases = new List<Phrase>();
 
-            using (SqlConnection con = DbHelper.GetConnection()) // إنشاء الاتصال بقاعدة البيانات
+            using (SqlConnection con = DbHelper.GetConnection())
             {
-                con.Open(); // فتح الاتصال
+                con.Open();
 
-                // إنشاء أمر SQL لاسترجاع بيانات الجمل مع معلومات الزيارة والمدينة والدولة والرحلة
                 SqlCommand cmd = new SqlCommand(@"
-            SELECT p.PhraseID, p.VisitID, p.OriginalText, p.Translation, p.Language, p.Notes, p.IsDeleted, p.UpdatedAt,
-                   v.TripID, v.CityID, v.VisitDate, v.Rating, v.Notes as VisitNotes, v.IsDeleted as VisitIsDeleted, v.UpdatedAt as VisitUpdatedAt,
-                   c.CityName, c.CountryID,
-                   co.CountryName,
-                   t.TripName, t.UserID
-            FROM Phrase p
-            INNER JOIN CityVisit v ON p.VisitID = v.VisitID
-            INNER JOIN City c ON v.CityID = c.CityID
-            INNER JOIN Country co ON c.CountryID = co.CountryID
-            INNER JOIN Trip t ON v.TripID = t.TripID
-            WHERE p.IsDeleted = 0 AND t.UserID = @UserID", con); // فقط الجمل غير المحذوفة والمرتبطة بالمستخدم
+                    SELECT p.PhraseID, p.VisitID, p.OriginalText, p.Translation, p.Language, p.Notes, p.IsDeleted, p.UpdatedAt,
+                           v.TripID, v.CityID, v.VisitDate, v.Rating, v.Notes as VisitNotes, v.IsDeleted as VisitIsDeleted, v.UpdatedAt as VisitUpdatedAt,
+                           c.CityName, c.CountryID,
+                           co.CountryName,
+                           t.TripName, t.UserID
+                    FROM Phrase p
+                    INNER JOIN CityVisit v ON p.VisitID = v.VisitID
+                    INNER JOIN City c ON v.CityID = c.CityID
+                    INNER JOIN Country co ON c.CountryID = co.CountryID
+                    INNER JOIN Trip t ON v.TripID = t.TripID
+                    WHERE p.IsDeleted = 0 AND t.UserID = @UserID", con);
 
-                // تمرير معرف المستخدم كـ parameter للأمان ضد SQL Injection
                 cmd.Parameters.AddWithValue("@UserID", userId);
 
-                // تنفيذ الأمر وقراءة النتائج
                 using (SqlDataReader reader = cmd.ExecuteReader())
                 {
-                    while (reader.Read()) // التكرار على كل سجل
+                    while (reader.Read())
                     {
-                        // إنشاء كائن الدولة
                         var country = new Country
                         {
                             CountryID = Convert.ToInt32(reader["CountryID"]),
                             CountryName = reader["CountryName"].ToString()
                         };
 
-                        // إنشاء كائن المدينة
                         var city = new City
                         {
                             CityID = Convert.ToInt32(reader["CityID"]),
@@ -59,7 +49,6 @@ namespace Rahhal_System1.DAL
                             Country = country
                         };
 
-                        // إنشاء كائن الرحلة
                         var trip = new Trip
                         {
                             TripID = Convert.ToInt32(reader["TripID"]),
@@ -67,7 +56,6 @@ namespace Rahhal_System1.DAL
                             UserID = Convert.ToInt32(reader["UserID"])
                         };
 
-                        // إنشاء كائن الزيارة
                         var visit = new CityVisit
                         {
                             VisitID = Convert.ToInt32(reader["VisitID"]),
@@ -82,7 +70,6 @@ namespace Rahhal_System1.DAL
                             Trip = trip
                         };
 
-                        // إضافة الجملة إلى القائمة
                         phrases.Add(new Phrase
                         {
                             PhraseID = Convert.ToInt32(reader["PhraseID"]),
@@ -99,21 +86,105 @@ namespace Rahhal_System1.DAL
                 }
             }
 
-            return phrases; // إرجاع قائمة الجمل
+            return phrases;
         }
 
-        // دالة لتنفيذ الحذف الناعم (Soft Delete) لجملة معينة
+        // جلب عبارة محددة حسب المعرف
+        public static Phrase GetPhraseById(int phraseId)
+        {
+            Phrase phrase = null;
+
+            using (SqlConnection con = DbHelper.GetConnection())
+            {
+                con.Open();
+
+                SqlCommand cmd = new SqlCommand("SELECT * FROM Phrase WHERE PhraseID = @PhraseID", con);
+                cmd.Parameters.AddWithValue("@PhraseID", phraseId);
+
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        phrase = new Phrase
+                        {
+                            PhraseID = Convert.ToInt32(reader["PhraseID"]),
+                            VisitID = Convert.ToInt32(reader["VisitID"]),
+                            OriginalText = reader["OriginalText"].ToString(),
+                            Translation = reader["Translation"].ToString(),
+                            Language = reader["Language"].ToString(),
+                            Notes = reader["Notes"].ToString(),
+                            IsDeleted = Convert.ToBoolean(reader["IsDeleted"]),
+                            UpdatedAt = reader["UpdatedAt"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(reader["UpdatedAt"])
+                        };
+                    }
+                }
+            }
+
+            return phrase;
+        }
+
+        // إضافة عبارة جديدة إلى قاعدة البيانات
+        public static bool AddPhrase(Phrase phrase)
+        {
+            using (SqlConnection con = DbHelper.GetConnection())
+            {
+                SqlCommand cmd = new SqlCommand(@"
+                    INSERT INTO Phrase (VisitID, OriginalText, Translation, Language, Notes)
+                    VALUES (@VisitID, @OriginalText, @Translation, @Language, @Notes)", con);
+
+                cmd.Parameters.AddWithValue("@VisitID", phrase.VisitID);
+                cmd.Parameters.AddWithValue("@OriginalText", phrase.OriginalText);
+                cmd.Parameters.AddWithValue("@Translation", phrase.Translation);
+                cmd.Parameters.AddWithValue("@Language", phrase.Language);
+                cmd.Parameters.AddWithValue("@Notes", phrase.Notes);
+
+                con.Open();
+
+                return cmd.ExecuteNonQuery() > 0;
+            }
+        }
+
+        // تعديل عبارة موجودة
+        public static bool UpdatePhrase(Phrase phrase)
+        {
+            using (SqlConnection con = DbHelper.GetConnection())
+            {
+                SqlCommand cmd = new SqlCommand(@"
+                    UPDATE Phrase
+                    SET VisitID = @VisitID,
+                        OriginalText = @OriginalText,
+                        Translation = @Translation,
+                        Language = @Language,
+                        Notes = @Notes,
+                        UpdatedAt = GETDATE()
+                    WHERE PhraseID = @PhraseID", con);
+
+                cmd.Parameters.AddWithValue("@PhraseID", phrase.PhraseID);
+                cmd.Parameters.AddWithValue("@VisitID", phrase.VisitID);
+                cmd.Parameters.AddWithValue("@OriginalText", phrase.OriginalText);
+                cmd.Parameters.AddWithValue("@Translation", phrase.Translation);
+                cmd.Parameters.AddWithValue("@Language", phrase.Language);
+                cmd.Parameters.AddWithValue("@Notes", phrase.Notes);
+
+                con.Open();
+
+                return cmd.ExecuteNonQuery() > 0;
+            }
+        }
+
+        // الحذف الناعم لجملة (تعيين IsDeleted بدل الحذف النهائي)
         public static bool SoftDeletePhrase(int phraseID)
         {
-            using (SqlConnection con = DbHelper.GetConnection()) // فتح الاتصال بقاعدة البيانات
+            using (SqlConnection con = DbHelper.GetConnection())
             {
-                // إعداد أمر SQL لتحديث الجملة وتعيين الحقل IsDeleted = 1 وتحديث التاريخ
                 using (SqlCommand cmd = new SqlCommand("UPDATE Phrase SET IsDeleted = 1, UpdatedAt = @UpdatedAt WHERE PhraseID = @PhraseID", con))
                 {
-                    cmd.Parameters.AddWithValue("@PhraseID", phraseID); // تمرير المعرف
-                    cmd.Parameters.AddWithValue("@UpdatedAt", DateTime.Now); // تمرير التاريخ الحالي كوقت التحديث
-                    con.Open(); // فتح الاتصال
-                    return cmd.ExecuteNonQuery() > 0; // تنفيذ الأمر وإرجاع true إذا تم تعديل صف واحد على الأقل
+                    cmd.Parameters.AddWithValue("@PhraseID", phraseID);
+                    cmd.Parameters.AddWithValue("@UpdatedAt", DateTime.Now);
+
+                    con.Open();
+
+                    return cmd.ExecuteNonQuery() > 0;
                 }
             }
         }

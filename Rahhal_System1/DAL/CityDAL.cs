@@ -3,6 +3,7 @@ using Rahhal_System1.DAL;
 using Rahhal_System1.Models;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -13,37 +14,27 @@ namespace Rahhal_System1.DAL
     // كلاس يحتوي على العمليات الخاصة بالمدن داخل قاعدة البيانات
     public class CityDAL
     {
-        // دالة لجلب قائمة المدن التي تنتمي لدولة معينة (مع تجاهل المحذوفة)
+        // دالة لجلب قائمة المدن التي تنتمي لدولة معينة (مع تجاهل المحذوفة) - ترجع كائنات City
         public static List<City> GetCitiesByCountry(int countryId)
         {
-            // إنشاء قائمة لتخزين المدن المسترجعة من قاعدة البيانات
             List<City> cities = new List<City>();
 
-            // إنشاء اتصال بقاعدة البيانات باستخدام DbHelper
             using (SqlConnection con = DbHelper.GetConnection())
             {
-                // تجهيز الاستعلام لجلب المدن حسب رقم الدولة مع تجاهل المدن المحذوفة (IsDeleted = 0)
                 using (SqlCommand cmd = new SqlCommand(
                     "SELECT * FROM City WHERE CountryID = @CountryID AND IsDeleted = 0", con))
                 {
-                    // تمرير قيمة معرف الدولة إلى الاستعلام كمعامل
                     cmd.Parameters.AddWithValue("@CountryID", countryId);
-
-                    // فتح الاتصال بقاعدة البيانات
                     con.Open();
 
-                    // تنفيذ الاستعلام وقراءة النتائج
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
-                        // التكرار على كل صف تم استرجاعه من قاعدة البيانات
                         while (reader.Read())
                         {
-                            // قراءة التاريخ المحدث إن وجد (قد يكون فارغ)
                             DateTime? updatedAt = null;
                             if (reader["UpdatedAt"] != DBNull.Value)
                                 updatedAt = Convert.ToDateTime(reader["UpdatedAt"]);
 
-                            // إنشاء كائن جديد من نوع City وتعبئة خصائصه من البيانات المقروءة
                             cities.Add(new City
                             {
                                 CityID = Convert.ToInt32(reader["CityID"]),
@@ -57,33 +48,74 @@ namespace Rahhal_System1.DAL
                 }
             }
 
-            // إرجاع قائمة المدن المسترجعة
             return cities;
         }
 
         // دالة لتنفيذ حذف ناعم (Soft Delete) لمدينة حسب معرفها
         public static bool SoftDeleteCity(int cityId)
         {
-            // إنشاء اتصال بقاعدة البيانات
             using (SqlConnection con = DbHelper.GetConnection())
             {
-                // تجهيز استعلام التحديث لتغيير حالة المدينة إلى محذوفة وتحديث تاريخ التحديث
                 using (SqlCommand cmd = new SqlCommand(
                     "UPDATE City SET IsDeleted = 1, UpdatedAt = @UpdatedAt WHERE CityID = @CityID", con))
                 {
-                    // تمرير قيمة معرف المدينة إلى الاستعلام
                     cmd.Parameters.AddWithValue("@CityID", cityId);
-
-                    // تمرير التاريخ الحالي لتحديثه في الحقل UpdatedAt
                     cmd.Parameters.AddWithValue("@UpdatedAt", DateTime.Now);
-
-                    // فتح الاتصال وتنفيذ الاستعلام
                     con.Open();
-
-                    // إرجاع true إذا تم التحديث بنجاح (أي تأثر صف واحد على الأقل)
                     return cmd.ExecuteNonQuery() > 0;
                 }
             }
         }
+
+        // NEW دالة لإرجاع المدن كـ DataTable حسب الدولة
+        public static DataTable GetCitiesByCountryTable(int countryId)
+        {
+            using (SqlConnection con = DbHelper.GetConnection())
+            {
+                con.Open();
+                using (SqlCommand cmd = new SqlCommand("SELECT CityID, CityName FROM City WHERE IsDeleted = 0 AND CountryID = @CountryID", con))
+                {
+                    cmd.Parameters.AddWithValue("@CountryID", countryId);
+                    DataTable dt = new DataTable();
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    {
+                        da.Fill(dt);
+                    }
+                    return dt;
+                }
+            }
+        }
+
+        // NEW دالة لجلب جميع المدن كـ DataTable
+        public static DataTable GetAllCitiesTable()
+        {
+            using (SqlConnection con = DbHelper.GetConnection())
+            {
+                con.Open();
+                using (SqlCommand cmd = new SqlCommand("SELECT CityID, CityName FROM City WHERE IsDeleted = 0", con))
+                {
+                    DataTable dt = new DataTable();
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    {
+                        da.Fill(dt);
+                    }
+                    return dt;
+                }
+            }
+        }
+
+        //هذه دالة لجلب معرف الدولة (CountryID) بناءً على معرف المدينة (CityID).
+        public static int GetCountryIdByCityId(int cityId)
+        {
+            using (SqlConnection con = DbHelper.GetConnection())
+            {
+                con.Open();
+                SqlCommand cmd = new SqlCommand("SELECT CountryID FROM City WHERE CityID = @CityID", con);
+                cmd.Parameters.AddWithValue("@CityID", cityId);
+                object result = cmd.ExecuteScalar();
+                return result != null ? Convert.ToInt32(result) : 0;
+            }
+        }
+
     }
 }

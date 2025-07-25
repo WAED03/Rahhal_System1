@@ -1,4 +1,5 @@
 ﻿using Rahhal_System1.DAL;
+using Rahhal_System1.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -16,32 +17,33 @@ namespace Rahhal_System1.Forms
 {
     public partial class NewCity : Form
     {
-        // متغير لتحديد إذا كانت العملية "إضافة" أو "تعديل"
-        private int? editingVisitID = null; // null تعني إضافة، وإذا تحتوي رقم فهي تعديل لزيارة موجودة
+        // معرف الزيارة في حالة التعديل، إذا كان null فهذا يعني إضافة جديدة
+        private int? editingVisitID = null;
 
-        // مُنشئ يتم استدعاؤه عند إنشاء النموذج في حالة "إضافة"
+        // المُنشئ الافتراضي يقوم باستدعاء المُنشئ الأساسي مع قيمة null (لإضافة جديدة)
         public NewCity() : this(null)
         {
         }
 
-        // مُنشئ يتم استدعاؤه في حالة "تعديل"، حيث يتم تمرير visitID
+        // المُنشئ الأساسي يستقبل معرف الزيارة في حالة التعديل
         public NewCity(int? visitID)
         {
             InitializeComponent();
             editingVisitID = visitID;
 
-            // تحديد نطاق التقييم من 1 إلى 5
+            // ضبط قيم النطاق للتقييم من 1 إلى 5 والقيمة الافتراضية 3
             nudRating.Minimum = 1;
             nudRating.Maximum = 5;
             nudRating.Value = 3;
 
-            // عند تحميل النموذج يتم تنفيذ الحدث التالي
+            // ربط حدث تحميل الفورم بالدالة NewCity_Load1
             this.Load += NewCity_Load1;
-            // عند تغيير الدولة يتم إعادة تحميل المدن التابعة لها
+
+            // ربط حدث تغيير اختيار الدولة بالدالة cbCountries_SelectedIndexChanged
             this.cbCountries.SelectedIndexChanged += cbCountries_SelectedIndexChanged;
         }
 
-        // التحقق من أن جميع الحقول تم تعبئتها بشكل صحيح
+        // دالة للتحقق من صحة تعبئة الحقول في الفورم
         private bool ValidateFields()
         {
             bool isValid = true;
@@ -68,14 +70,14 @@ namespace Rahhal_System1.Forms
                 isValid = false;
             }
 
-            // التحقق من كتابة ملاحظات
+            // التحقق من إدخال ملاحظات
             if (string.IsNullOrWhiteSpace(txtNotes.Text))
             {
                 errorProvider1.SetError(txtNotes, "Please enter notes");
                 isValid = false;
             }
 
-            // التأكد من أن التقييم يقع بين 1 و 5
+            // التأكد من أن التقييم ضمن النطاق المسموح به
             if (nudRating.Value < 1 || nudRating.Value > 5)
             {
                 errorProvider1.SetError(nudRating, "Please select a rating between 1 and 5");
@@ -85,235 +87,151 @@ namespace Rahhal_System1.Forms
             return isValid;
         }
 
-        // عند الضغط على زر "حفظ المدينة"
+        // حدث الضغط على زر الحفظ لإضافة أو تعديل زيارة المدينة
         private void btnSaveCity_Click(object sender, EventArgs e)
         {
-            // التحقق من صحة الحقول
-            if (!ValidateFields()) return;
+            if (!ValidateFields()) return; // إذا لم تتحقق الشروط لا تستمر
 
-            // قراءة البيانات من الواجهة
+            // جمع البيانات من الحقول
             int tripId = (int)cbTrips.SelectedValue;
             int cityId = (int)cbCities.SelectedValue;
             DateTime visitDate = dtpVisitDate.Value.Date;
             string rating = nudRating.Value.ToString();
             string notes = txtNotes.Text.Trim();
 
-            // الاتصال بقاعدة البيانات
-            using (SqlConnection con = DbHelper.GetConnection())
+            try
             {
-                con.Open();
+                bool success;
 
-                try
+                if (editingVisitID == null)
                 {
-                    SqlCommand cmd;
-
-                    if (editingVisitID == null)
+                    // إذا إضافة جديدة، إنشاء كائن جديد للزيارة وتمريره إلى DAL
+                    CityVisit newVisit = new CityVisit
                     {
-                        // تنفيذ أمر الإدخال (إضافة)
-                        cmd = new SqlCommand(
-                            @"INSERT INTO CityVisit (TripID, CityID, VisitDate, Rating, Notes)
-                              VALUES (@TripID, @CityID, @VisitDate, @Rating, @Notes)", con);
-                    }
-                    else
+                        TripID = tripId,
+                        CityID = cityId,
+                        VisitDate = visitDate,
+                        Rating = rating,
+                        Notes = notes
+                    };
+
+                    success = CityVisitDAL.AddVisit(newVisit);
+                }
+                else
+                {
+                    // إذا تعديل، إنشاء كائن مع المعرف وتمريره لتحديث البيانات
+                    CityVisit updatedVisit = new CityVisit
                     {
-                        // تنفيذ أمر التحديث (تعديل)
-                        cmd = new SqlCommand(
-                            @"UPDATE CityVisit 
-                              SET TripID = @TripID, CityID = @CityID, VisitDate = @VisitDate, Rating = @Rating, Notes = @Notes, UpdatedAt = GETDATE()
-                              WHERE VisitID = @VisitID", con);
-                        cmd.Parameters.AddWithValue("@VisitID", editingVisitID.Value);
-                    }
+                        VisitID = editingVisitID.Value,
+                        TripID = tripId,
+                        CityID = cityId,
+                        VisitDate = visitDate,
+                        Rating = rating,
+                        Notes = notes
+                    };
 
-                    // تمرير القيم للمعاملات
-                    cmd.Parameters.AddWithValue("@TripID", tripId);
-                    cmd.Parameters.AddWithValue("@CityID", cityId);
-                    cmd.Parameters.AddWithValue("@VisitDate", visitDate);
-                    cmd.Parameters.AddWithValue("@Rating", rating);
-                    cmd.Parameters.AddWithValue("@Notes", notes);
+                    success = CityVisitDAL.UpdateVisit(updatedVisit);
+                }
 
-                    // تنفيذ الأمر
-                    cmd.ExecuteNonQuery();
-
-                    // تسجيل النشاط
+                if (success)
+                {
+                    // تسجيل النشاط (إضافة أو تعديل) في السجل
                     string action = editingVisitID == null ? "Add CityVisit" : "Edit CityVisit";
-                    ActivityLogger.Log(con, action, $"CityID={cityId}, Rating={rating}, Date={visitDate:yyyy-MM-dd}");
+                    using (SqlConnection con = DbHelper.GetConnection())
+                    {
+                        con.Open();
+                        ActivityLogger.Log(con, action, $"CityID={cityId}, Rating={rating}, Date={visitDate:yyyy-MM-dd}");
+                    }
 
-                    // إظهار رسالة نجاح
+                    // إظهار رسالة نجاح وإغلاق الفورم مع تعيين نتيجة DialogResult
                     MessageBox.Show(editingVisitID == null ? "✅ Visit saved successfully." : "✏️ Visit updated successfully.");
                     this.DialogResult = DialogResult.OK;
                     this.Close();
                 }
-                catch (Exception ex)
+                else
                 {
-                    MessageBox.Show("❌ Error: " + ex.Message);
+                    // رسالة فشل العملية
+                    MessageBox.Show("❌ Operation failed.");
                 }
+            }
+            catch (Exception ex)
+            {
+                // رسالة الخطأ في حالة الاستثناء
+                MessageBox.Show("❌ Error: " + ex.Message);
             }
         }
 
-        // عند تحميل النموذج
+        // حدث تحميل الفورم، يتم تحميل البيانات الضرورية للقوائم المنسدلة
         private void NewCity_Load1(object sender, EventArgs e)
         {
-            // تحميل الرحلات والدول
-            cbTrips.DataSource = GetTrips();
-            cbTrips.DisplayMember = "TripName";
-            cbTrips.ValueMember = "TripID";
+            // تحميل الرحلات الخاصة بالمستخدم الحالي عبر DAL
+            cbTrips.DataSource = TripDAL.GetTripsByUser(ActivityLogger.CurrentUser.UserID);
+            cbTrips.DisplayMember = "TripName";  // ما يعرض في القائمة
+            cbTrips.ValueMember = "TripID";      // القيمة الفعلية المرتبطة بكل عنصر
 
-            cbCountries.DataSource = GetCountries();
+            // تحميل قائمة الدول
+            cbCountries.DataSource = CountryDAL.GetAllCountries();
             cbCountries.DisplayMember = "CountryName";
             cbCountries.ValueMember = "CountryID";
 
-            // تحميل المدن للدولة المحددة
+            // تحميل المدن للدولة الأولى المختارة
             if (cbCountries.Items.Count > 0 && cbCountries.SelectedValue != null)
             {
                 int firstCountryId = Convert.ToInt32(cbCountries.SelectedValue);
-                cbCities.DataSource = GetCitiesByCountry(firstCountryId);
+                cbCities.DataSource = CityDAL.GetCitiesByCountryTable(firstCountryId);
                 cbCities.DisplayMember = "CityName";
                 cbCities.ValueMember = "CityID";
             }
 
-            // إعداد تقييم افتراضي
+            // تعيين قيم النطاق الافتراضية للتقييم (يمكن حذفها إذا سبق وتم تعيينها في المُنشئ)
             nudRating.Minimum = 1;
             nudRating.Maximum = 5;
             nudRating.Value = 3;
 
-            // إذا كانت العملية تعديل، يتم تحميل البيانات القديمة
+            // إذا كانت عملية تعديل، تحميل بيانات الزيارة الموجودة مسبقًا
             if (editingVisitID != null)
             {
                 LoadVisitData((int)editingVisitID);
             }
         }
 
-        // عند تغيير الدولة يتم تحميل المدن الخاصة بها
+        // حدث تغيير اختيار الدولة، يتم تحديث المدن بناءً على الدولة المحددة
         private void cbCountries_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cbCountries.SelectedValue != null && int.TryParse(cbCountries.SelectedValue.ToString(), out int countryId))
             {
-                cbCities.DataSource = GetCitiesByCountry(countryId);
+                cbCities.DataSource = CityDAL.GetCitiesByCountryTable(countryId);
                 cbCities.DisplayMember = "CityName";
                 cbCities.ValueMember = "CityID";
             }
         }
 
-        // تحميل بيانات الزيارة عند تعديلها
+        // تحميل بيانات زيارة موجودة للتعديل بناءً على معرف الزيارة
         private void LoadVisitData(int visitID)
         {
-            using (SqlConnection con = DbHelper.GetConnection())
+            // استدعاء دالة من DAL لجلب تفاصيل الزيارة
+            CityVisit visit = CityVisitDAL.GetVisitById(visitID);
+            if (visit != null)
             {
-                con.Open();
-                SqlCommand cmd = new SqlCommand(
-                    @"SELECT TripID, CityID, VisitDate, Rating, Notes 
-                      FROM CityVisit 
-                      WHERE VisitID = @VisitID", con);
-                cmd.Parameters.AddWithValue("@VisitID", visitID);
+                cbTrips.SelectedValue = visit.TripID;
 
-                using (SqlDataReader reader = cmd.ExecuteReader())
-                {
-                    if (reader.Read())
-                    {
-                        cbTrips.SelectedValue = reader["TripID"];
-                        int cityId = Convert.ToInt32(reader["CityID"]);
-                        int countryId = GetCountryIdByCityId(cityId);
+                int cityId = visit.CityID;
+                // الحصول على معرف الدولة من خلال معرف المدينة عبر DAL
+                int countryId = CityDAL.GetCountryIdByCityId(cityId);
 
-                        cbCountries.SelectedValue = countryId;
+                cbCountries.SelectedValue = countryId;
 
-                        cbCities.DataSource = GetCitiesByCountry(countryId);
-                        cbCities.DisplayMember = "CityName";
-                        cbCities.ValueMember = "CityID";
-                        cbCities.SelectedValue = cityId;
+                // تحميل المدن الخاصة بتلك الدولة
+                cbCities.DataSource = CityDAL.GetCitiesByCountryTable(countryId);
+                cbCities.DisplayMember = "CityName";
+                cbCities.ValueMember = "CityID";
+                cbCities.SelectedValue = cityId;
 
-                        dtpVisitDate.Value = Convert.ToDateTime(reader["VisitDate"]);
-                        nudRating.Value = Convert.ToInt32(reader["Rating"].ToString());
-                        txtNotes.Text = reader["Notes"].ToString();
-                    }
-                }
+                dtpVisitDate.Value = visit.VisitDate;
+                nudRating.Value = Convert.ToInt32(visit.Rating);
+                txtNotes.Text = visit.Notes;
             }
         }
 
-        // الحصول على معرف الدولة بناءً على معرف المدينة
-        private int GetCountryIdByCityId(int cityId)
-        {
-            using (SqlConnection con = DbHelper.GetConnection())
-            {
-                con.Open();
-                SqlCommand cmd = new SqlCommand("SELECT CountryID FROM City WHERE CityID = @CityID", con);
-                cmd.Parameters.AddWithValue("@CityID", cityId);
-                object result = cmd.ExecuteScalar();
-                return result != null ? Convert.ToInt32(result) : 0;
-            }
-        }
-
-        // جلب قائمة الدول
-        private DataTable GetCountries()
-        {
-            using (SqlConnection con = DbHelper.GetConnection())
-            {
-                con.Open();
-                using (SqlCommand cmd = new SqlCommand("SELECT CountryID, CountryName FROM Country WHERE IsDeleted = 0", con))
-                {
-                    DataTable dt = new DataTable();
-                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
-                    {
-                        da.Fill(dt);
-                    }
-                    return dt;
-                }
-            }
-        }
-
-        // جلب الرحلات الخاصة بالمستخدم الحالي
-        private DataTable GetTrips()
-        {
-            using (SqlConnection con = DbHelper.GetConnection())
-            {
-                con.Open();
-                using (SqlCommand cmd = new SqlCommand("SELECT TripID, TripName FROM Trip WHERE IsDeleted = 0 AND UserID = @UserID", con))
-                {
-                    cmd.Parameters.AddWithValue("@UserID", ActivityLogger.CurrentUser.UserID);
-                    DataTable dt = new DataTable();
-                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
-                    {
-                        da.Fill(dt);
-                    }
-                    return dt;
-                }
-            }
-        }
-
-        // جلب جميع المدن
-        private DataTable GetCities()
-        {
-            using (SqlConnection con = DbHelper.GetConnection())
-            {
-                con.Open();
-                using (SqlCommand cmd = new SqlCommand("SELECT CityID, CityName FROM City WHERE IsDeleted = 0", con))
-                {
-                    DataTable dt = new DataTable();
-                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
-                    {
-                        da.Fill(dt);
-                    }
-                    return dt;
-                }
-            }
-        }
-
-        // جلب المدن التابعة لدولة معينة
-        private DataTable GetCitiesByCountry(int countryId)
-        {
-            using (SqlConnection con = DbHelper.GetConnection())
-            {
-                con.Open();
-                using (SqlCommand cmd = new SqlCommand("SELECT CityID, CityName FROM City WHERE IsDeleted = 0 AND CountryID = @CountryID", con))
-                {
-                    cmd.Parameters.AddWithValue("@CountryID", countryId);
-                    DataTable dt = new DataTable();
-                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
-                    {
-                        da.Fill(dt);
-                    }
-                    return dt;
-                }
-            }
-        }
     }
 }

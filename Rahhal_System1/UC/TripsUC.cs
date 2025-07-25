@@ -140,41 +140,24 @@ namespace Rahhal_System1.UC
             using (var con = DbHelper.GetConnection())
             {
                 con.Open();
-                SqlTransaction transaction = con.BeginTransaction(); // فتح معاملة لضمان التكامل
+                var transaction = con.BeginTransaction();
 
                 try
                 {
-                    // 1. حذف الرحلة نفسها (soft delete)
-                    SqlCommand cmdTrip = new SqlCommand("UPDATE Trip SET IsDeleted = 1, UpdatedAt = GETDATE() WHERE TripID = @TripID", con, transaction);
-                    cmdTrip.Parameters.AddWithValue("@TripID", tripID);
-                    cmdTrip.ExecuteNonQuery();
+                    TripDAL.SoftDeleteTripWithDependencies(tripID, tripName, con, transaction);
+                    transaction.Commit();
 
-                    // 2. حذف جميع الزيارات المرتبطة بالرحلة (soft delete)
-                    SqlCommand cmdVisits = new SqlCommand("UPDATE CityVisit SET IsDeleted = 1, UpdatedAt = GETDATE() WHERE TripID = @TripID", con, transaction);
-                    cmdVisits.Parameters.AddWithValue("@TripID", tripID);
-                    cmdVisits.ExecuteNonQuery();
-
-                    // 3. حذف جميع العبارات المرتبطة بالزيارات (soft delete)
-                    SqlCommand cmdPhrases = new SqlCommand(@"
-                        UPDATE Phrase SET IsDeleted = 1, UpdatedAt = GETDATE()
-                        WHERE VisitID IN (SELECT VisitID FROM CityVisit WHERE TripID = @TripID)", con, transaction);
-                    cmdPhrases.Parameters.AddWithValue("@TripID", tripID);
-                    cmdPhrases.ExecuteNonQuery();
-
-                    // 4. تسجيل العملية في سجل النشاطات
-                    ActivityLogger.Log(con, transaction, "SoftDelete Trip", $"Soft-deleted trip '{tripName}' (ID = {tripID})");
-
-                    transaction.Commit(); // تأكيد المعاملة
-                    GlobalData.RefreshTrips(ActivityLogger.CurrentUser.UserID); // تحديث البيانات العامة
+                    GlobalData.RefreshTrips(ActivityLogger.CurrentUser.UserID);
                     MessageBox.Show("🗑️ Trip deleted successfully (soft delete).");
                 }
                 catch (Exception ex)
                 {
-                    transaction.Rollback(); // في حالة الخطأ يتم التراجع عن كل العمليات
+                    transaction.Rollback();
                     MessageBox.Show("❌ Error during delete: " + ex.Message);
                 }
             }
         }
+
 
         // عند الضغط على زر "إضافة رحلة جديدة"
         private void btnAddTrip_Click(object sender, EventArgs e)
