@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Rahhal_System1.Data;      // لاستدعاء البيانات العامة (مثل قائمة المستخدمين)
 using Rahhal_System1.Models;    // لاستدعاء نموذج المستخدم User
+using Rahhal_System1.DAL;       // لاستدعاء دوال الوصول إلى البيانات (مثل حذف المستخدم)
 
 namespace Rahhal_System1.Forms
 {
