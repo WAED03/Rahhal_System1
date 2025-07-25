@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Rahhal_System1.Models
+namespace Rahhal_System1.DAL
 {
     // كلاس خاص بالتعامل مع بيانات المستخدمين (Data Access Layer)
     public class UserDAL
